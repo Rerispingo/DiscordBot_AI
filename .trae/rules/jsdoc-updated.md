@@ -1,1 +1,0 @@
-Sempre crie ou faça a manutenção de documentação de arquitetura JSDoc no projeto.

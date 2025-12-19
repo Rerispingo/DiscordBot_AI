@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 export interface Command {
     name: string;
     description: string;
-    category: 'geral' | 'admin';
+    category: 'geral' | 'admin' | 'diversos';
     onlyRoot?: boolean;
     onlyManager?: boolean;
     execute(message: Message, args: string[]): Promise<void>;

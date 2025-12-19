@@ -26,6 +26,15 @@ export const ajudaCommand: Command = {
                 '**`./managers`**\n└ Lista os managers do servidor.\n\n' +
                 '**`./managerroot`**\n└ Mostra quem é o Root Manager.\n\n' +
                 '**`./emojirandom (quantidade)`**\n└ Sorteia emojis aleatórios.'
+            },
+            { name: `🎭 **Comandos Diversos**`, value:
+                '**`./dado (faces)`**\n└ Rola um dado de N faces.\n\n' +
+                '**`./8ball (pergunta)`**\n└ Faça uma pergunta à Bola 8.\n\n' +
+                '**`./moeda`**\n└ Gira uma moeda (Cara ou Coroa).\n\n' +
+                '**`./reverter (texto)`**\n└ Inverte o texto fornecido.\n\n' +
+                '**`./escolha (opções...)`**\n└ Escolhe entre opções separadas por vírgula.\n\n' +
+                '**`./ascii (texto)`**\n└ Transforma texto em arte ASCII.\n\n' +
+                '**`./piada`**\n└ Conta uma piada de programador.'
             }
         );
 
