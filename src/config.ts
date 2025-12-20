@@ -33,6 +33,7 @@ export const Config = {
         data: path.join(process.cwd(), 'data'),
         managers: path.join(process.cwd(), 'data', 'managers.json'),
         emojis: path.join(process.cwd(), 'data', 'emojis.json'),
+        status: path.join(process.cwd(), 'data', 'status.json'),
         commands: path.join(__dirname, 'commands'),
     },
 

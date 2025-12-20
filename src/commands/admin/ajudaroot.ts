@@ -25,6 +25,8 @@ export const ajudaRootCommand: Command = {
                 '**`./manageradd @user`**\n└ Adiciona um novo manager ao servidor.\n\n' +
                 '**`./managerremove @user`**\n└ Remove um manager existente do servidor.\n\n' +
                 '**`./creation-workspace`**\n└ Cria uma área de trabalho exclusiva para o bot.\n\n' +
+                '**`./status-type (tipo)`**\n└ Altera o tipo de atividade (playing, watching, listening, competing).\n\n' +
+                '**`./status-text (texto)`**\n└ Altera o texto da atividade do bot.\n\n' +
                 '**`./ajudaroot`**\n└ Exibe esta mensagem de ajuda administrativa.'
             }
         );

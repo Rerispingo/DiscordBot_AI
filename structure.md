@@ -23,6 +23,7 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
         - `mod-chat/`: Comandos de moderação de canais de texto (chat-lock, chat-unlock, nuke).
 - `data/`: Armazenamento de dados persistentes.
     - `managers.json`: Lista de managers por servidor.
+    - `status.json`: Persistência do status de atividade do bot.
     - `emojis.json`: Lista de 200 emojis para o comando emojirandom.
     - `8ball.json`: Respostas para o comando de Bola 8.
     - `piadas.json`: Lista de piadas para o comando de piada.
@@ -55,6 +56,8 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 - `./manageradd @usuario`: Promove um usuário a manager (Apenas Root Manager).
 - `./managerremove @usuario`: Remove um usuário da lista de managers (Apenas Root Manager).
 - `./creation-workspace`: Cria uma área de trabalho exclusiva (categoria e canais) para o bot (Apenas Root Manager).
+- `./status-type (tipo)`: Altera o tipo de atividade do bot (Apenas Root Manager).
+- `./status-text (texto)`: Altera o texto da atividade do bot (Apenas Root Manager).
 - `./ajudaroot`: Exibe os comandos exclusivos do Root Manager.
 
 ### 🛡️ Comandos de Moderacao Gerais
