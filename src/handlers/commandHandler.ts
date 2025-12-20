@@ -69,6 +69,31 @@ export class CommandHandler {
     async handle(message: Message) {
         if (message.author.bot || !message.content.startsWith(this.prefix)) return;
 
+        // Restrição para o canal de logs
+        if (message.guild) {
+            const logsChannel = await findWorkspaceLogsChannel(message.guild);
+            if (logsChannel && message.channel.id === logsChannel.id) {
+                // Apaga a mensagem do usuário imediatamente
+                if (message.deletable) {
+                    await message.delete().catch(() => {});
+                }
+
+                const warning = await logsChannel.send({
+                    content: `⚠️ <@${message.author.id}>, não é permitido o uso de comandos neste canal de logs.`
+                });
+                
+                // Remove o aviso do bot após 2 segundos
+                setTimeout(async () => {
+                    try {
+                        await warning.delete();
+                    } catch (e) {
+                        // Ignora se a mensagem já tiver sido deletada
+                    }
+                }, 2000);
+                return;
+            }
+        }
+
         const args = message.content.slice(this.prefix.length).trim().split(/ +/);
         const commandName = args.shift()?.toLowerCase();
 
@@ -123,21 +148,12 @@ export class CommandHandler {
             return;
         }
 
-        // Verifica se o canal original ainda existe antes de registrar o log
-        // Se o canal foi deletado (como no delete-workspace), pulamos o log ou usamos informações salvas
-        const channelExists = message.guild.channels.cache.has(message.channelId);
-        if (!channelExists && commandName === 'delete-workspace') {
-            // Caso especial para delete-workspace: o canal de logs também pode ter sido deletado
-            // Mas se ele ainda existir, podemos tentar logar que o workspace foi removido
-            const logsChannel = await findWorkspaceLogsChannel(message.guild);
-            if (logsChannel) {
-                const embed = Embeds.log(message.client, 'Workspace Removido', [
-                    { name: 'Comando', value: `\`${Config.bot.prefix}${commandName}\``, inline: true },
-                    { name: 'Executor', value: `<@${message.author.id}>`, inline: true },
-                    { name: 'Status', value: '🗑️ Workspace Removido', inline: true }
-                ]);
-                await logsChannel.send({ embeds: [embed] }).catch(() => {});
-            }
+        // Filtro de logs: registrar apenas comandos de moderação e ignorar comandos exclusivos de root
+        const moderationCategories = ['mod-chat', 'mod-voz'];
+        const isModeration = moderationCategories.includes(command.category) || command.name === 'msg-delete';
+        const isRootOnly = command.onlyRoot === true;
+
+        if (!isModeration || isRootOnly) {
             return;
         }
 
