@@ -50,6 +50,10 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 - `./managerremove @usuario`: Remove um usuário da lista de managers (Apenas Root Manager).
 - `./creation-workspace`: Cria uma área de trabalho exclusiva (categoria e canais) para o bot (Apenas Root Manager).
 - `./msg-delete (quantidade)`: Deleta mensagens do chat (Managers e Root Manager).
+- `./voice-lock`: Tranca o canal de voz para apenas 1 pessoa (Managers).
+- `./voice-unlock`: Libera o canal de voz para entrada ilimitada (Managers).
+- `./voice-kick @user`: Remove um usuário da chamada de voz (Managers).
+- `./voice-move @user`: Move um usuário para sua chamada de voz (Managers).
 - `./ajudaroot`: Exibe os comandos exclusivos do Root Manager.
 
 ## Variáveis de Ambiente

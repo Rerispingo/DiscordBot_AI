@@ -42,6 +42,12 @@ export const ajudaCommand: Command = {
             helpEmbed.addFields(
                 { name: `${Config.emojis.tools} **Comandos de Manager**`, value:
                     '**`./msg-delete (quantidade)`**\n└ Deleta mensagens do chat.'
+                },
+                { name: `🔊 **Moderação de Voz**`, value:
+                    '**`./voice-lock`**\n└ Tranca o canal de voz para 1 pessoa.\n\n' +
+                    '**`./voice-unlock`**\n└ Libera o canal de voz (ilimitado).\n\n' +
+                    '**`./voice-kick @user`**\n└ Remove um usuário da chamada.\n\n' +
+                    '**`./voice-move @user`**\n└ Move um usuário para sua chamada.'
                 }
             );
         }

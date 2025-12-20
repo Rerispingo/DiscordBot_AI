@@ -44,6 +44,17 @@ Comandos para ajudar na manutenção do chat.
 
 ---
 
+## 🔊 Moderação de Voz (Managers)
+
+Controle os canais de voz com comandos rápidos.
+
+*   **`./voice-lock`**: Restringe o canal de voz em que você está para apenas 1 pessoa.
+*   **`./voice-unlock`**: Remove o limite de pessoas do seu canal de voz atual.
+*   **`./voice-kick @user`**: Desconecta o usuário mencionado de qualquer canal de voz.
+*   **`./voice-move @user`**: Puxa o usuário mencionado para o mesmo canal de voz que você.
+
+---
+
 ## 👑 Comandos de Root Manager (Exclusivos)
 
 Estes comandos só podem ser executados pelo proprietário do bot.
