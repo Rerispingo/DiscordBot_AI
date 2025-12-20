@@ -34,7 +34,12 @@ export const asciiCommand: Command = {
                 });
             }
 
-            message.reply('```\n' + data + '\n```');
+            const embed = Embeds.info(
+                message.client,
+                'Arte ASCII 🎨',
+                '```\n' + data + '\n```'
+            );
+            message.reply({ embeds: [embed] });
         });
     }
 };

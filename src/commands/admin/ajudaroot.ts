@@ -3,6 +3,10 @@ import type { Command } from '../../types/command.js';
 import { Config } from '../../config.js';
 import { Embeds } from '../../utils/embeds.js';
 
+/**
+ * Comando para exibir a ajuda exclusiva do Root Manager.
+ * Lista todos os comandos administrativos restritos.
+ */
 export const ajudaRootCommand: Command = {
     name: 'ajudaroot',
     description: 'Exibe a lista de comandos exclusivos do Root Manager.',

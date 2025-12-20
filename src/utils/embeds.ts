@@ -28,10 +28,11 @@ export class Embeds {
     }
 
     /**
-     * Embed para comandos gerais e informações públicas.
+     * Embed para comandos gerais e informações públicas com emoji customizável.
      */
-    static info(client: Client, title: string, description: string) {
-        return this.createBase(client, `${Config.emojis.bot} ${title}`, description, Config.colors.primary);
+    static info(client: Client, title: string, description: string, emoji?: string) {
+        const displayEmoji = emoji || Config.emojis.bot;
+        return this.createBase(client, `${displayEmoji} ${title}`, description, Config.colors.primary);
     }
 
     /**

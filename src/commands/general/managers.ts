@@ -1,33 +1,33 @@
-import { Message, EmbedBuilder } from 'discord.js';
+import { Message } from 'discord.js';
 import type { Command } from '../../types/command.js';
 import { ManagerSystem } from '../../managers.js';
+import { Embeds } from '../../utils/embeds.js';
 
+/**
+ * Comando para listar todos os managers do servidor atual.
+ */
 export const managersCommand: Command = {
     name: 'managers',
     description: 'Lista todos os managers deste servidor.',
     category: 'geral',
     async execute(message: Message) {
-        if (!message.guildId) return;
+        const client = message.client;
+        if (!message.guildId) {
+            await message.reply({ embeds: [Embeds.error(client, 'Este comando só pode ser utilizado dentro de um servidor.')] });
+            return;
+        }
 
         const managerIds = ManagerSystem.listManagers(message.guildId);
 
-        const embed = new EmbedBuilder()
-            .setColor(0x0099FF)
-            .setTitle('🛡️ Gerenciadores do Servidor')
-            .setTimestamp();
-
+        let description = '';
         if (managerIds.length === 0) {
-            embed.setDescription('Este servidor ainda não possui managers cadastrados.');
+            description = 'Este servidor ainda não possui managers cadastrados.';
         } else {
             const managerList = managerIds.map(id => `<@${id}>`).join('\n');
-            embed.setDescription(`Aqui estão os usuários com permissões de manager neste servidor:\n\n${managerList}`);
+            description = `Aqui estão os usuários com permissões de manager neste servidor:\n\n${managerList}`;
         }
 
-        const avatarURL = message.client.user?.displayAvatarURL();
-        if (avatarURL) {
-            embed.setFooter({ text: 'Discord Bot TS', iconURL: avatarURL });
-        }
-
+        const embed = Embeds.info(client, 'Gerenciadores do Servidor 🛡️', description);
         await message.reply({ embeds: [embed] });
     }
 };

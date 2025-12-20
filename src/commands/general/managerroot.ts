@@ -1,16 +1,30 @@
 import { Message } from 'discord.js';
 import type { Command } from '../../types/command.js';
+import { Config } from '../../config.js';
+import { Embeds } from '../../utils/embeds.js';
 
+/**
+ * Comando para identificar o Root Manager do bot.
+ */
 export const managerRootCommand: Command = {
     name: 'managerroot',
     description: 'Mostra quem é o Root Manager do bot.',
     category: 'geral',
     async execute(message: Message) {
-        const rootId = process.env.ROOT_MANAGER_ID;
+        const client = message.client;
+        const rootId = Config.bot.rootManagerId;
+
         if (!rootId) {
-            await message.reply('❌ O Root Manager não está configurado.');
+            await message.reply({ embeds: [Embeds.error(client, 'O Root Manager não está configurado nas variáveis de ambiente.')] });
             return;
         }
-        await message.reply(`👑 O Root Manager deste bot é: <@${rootId}>`);
+
+        const embed = Embeds.info(
+            client,
+            'Root Manager 👑',
+            `O administrador principal (Root Manager) deste bot é: <@${rootId}>`
+        );
+
+        await message.reply({ embeds: [embed] });
     }
 };

@@ -1,15 +1,24 @@
 import { Message, ChannelType, PermissionFlagsBits } from 'discord.js';
 import type { Command } from '../../types/command.js';
+import { Embeds } from '../../utils/embeds.js';
 
+/**
+ * Comando para criar uma área de trabalho exclusiva para o bot no servidor.
+ * Restrito ao Root Manager.
+ */
 export const creationWorkspaceCommand: Command = {
     name: 'creation-workspace',
     description: 'Cria uma área de trabalho exclusiva para o bot no servidor.',
     category: 'admin',
     onlyRoot: true,
     async execute(message: Message) {
-        if (!message.guild) return;
+        const client = message.client;
+        if (!message.guild) {
+            await message.reply({ embeds: [Embeds.error(client, 'Este comando só pode ser utilizado dentro de um servidor.')] });
+            return;
+        }
 
-        const botName = message.client.user?.username || 'Bot';
+        const botName = client.user?.username || 'Bot';
         const categoryName = `${botName} Area`;
 
         // 1. Verificar se a categoria já existe
@@ -18,7 +27,7 @@ export const creationWorkspaceCommand: Command = {
         );
 
         if (existingCategory) {
-            await message.reply(`❌ A categoria **${categoryName}** já existe neste servidor.`);
+            await message.reply({ embeds: [Embeds.error(client, `A categoria **${categoryName}** já existe neste servidor.`)] });
             return;
         }
 
@@ -37,7 +46,7 @@ export const creationWorkspaceCommand: Command = {
                         allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak],
                     },
                     {
-                        id: message.client.user!.id, // O próprio bot
+                        id: client.user!.id, // O próprio bot
                         allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.SendMessages],
                     }
                 ],
@@ -50,18 +59,18 @@ export const creationWorkspaceCommand: Command = {
                 parent: category.id,
             });
 
-            // 4. Criar o canal de voz "Voice"
+            // 4. Criar o canal de voz "voice-control"
             await message.guild.channels.create({
-                name: 'Voice',
+                name: 'voice-control',
                 type: ChannelType.GuildVoice,
                 parent: category.id,
             });
 
-            await message.reply(`✅ Workspace **${categoryName}** criado com sucesso com os canais #debugs e 🔊 Voice.`);
+            await message.reply({ embeds: [Embeds.success(client, `Área de trabalho **${categoryName}** criada com sucesso!`)] });
 
         } catch (error) {
             console.error('Erro ao criar workspace:', error);
-            await message.reply('❌ Ocorreu um erro ao tentar criar o workspace. Verifique se o bot tem permissão de "Gerenciar Canais".');
+            await message.reply({ embeds: [Embeds.error(client, 'Ocorreu um erro ao tentar criar a área de trabalho. Verifique se eu tenho permissão de "Gerenciar Canais".')] });
         }
-    },
+    }
 };

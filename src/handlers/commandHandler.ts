@@ -9,6 +9,8 @@ import { fileURLToPath, pathToFileURL } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import { Embeds } from '../utils/embeds.js';
+
 /**
  * Gerenciador central de comandos.
  * Responsável pelo carregamento dinâmico e pela execução com validação de permissões.
@@ -82,7 +84,9 @@ export class CommandHandler {
 
         // Verificação de permissões Root
         if (command.onlyRoot && message.author.id !== Config.bot.rootManagerId) {
-            await message.reply(`${Config.emojis.error} Este comando é restrito ao Root Manager.`);
+            await message.reply({
+                embeds: [Embeds.error(message.client, 'Este comando é restrito ao Root Manager.')]
+            });
             return;
         }
 
@@ -92,7 +96,9 @@ export class CommandHandler {
             const isManager = message.guildId && ManagerSystem.isManager(message.guildId, message.author.id);
 
             if (!isRoot && !isManager) {
-                await message.reply(`${Config.emojis.error} Este comando é restrito aos Managers ou ao Root Manager.`);
+                await message.reply({
+                    embeds: [Embeds.error(message.client, 'Este comando é restrito aos Managers ou ao Root Manager.')]
+                });
                 return;
             }
         }

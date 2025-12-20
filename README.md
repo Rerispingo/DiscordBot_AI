@@ -13,7 +13,7 @@ O prefixo padrão para todos os comandos é: `./`
 
 ---
 
-## 🎭 Comandos Diversos (Diversão & Utilidade)
+## 🎲 Comandos Diversos (Diversão & Utilidade)
 
 Esta categoria contém comandos para interagir com o bot e passar o tempo.
 
@@ -27,7 +27,9 @@ Esta categoria contém comandos para interagir com o bot e passar o tempo.
 
 ---
 
-## 🌐 Comandos Gerais
+## 🏠 Comandos Gerais
+
+Informações básicas e comandos utilitários para todos os usuários.
 
 *   **`./ping`**: Verifica se o bot está online e qual a latência da conexão.
 *   **`./managers`**: Lista todos os usuários que possuem permissão de Manager no servidor atual.
@@ -36,7 +38,7 @@ Esta categoria contém comandos para interagir com o bot e passar o tempo.
 
 ---
 
-## 🛠️ Comandos de Administração (Managers)
+## 🛡️ Comandos de Moderacao Gerais
 
 Comandos para ajudar na manutenção do chat.
 
