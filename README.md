@@ -74,7 +74,8 @@ Estes comandos só podem ser executados pelo proprietário do bot.
 *   **`./off`**: Desliga o bot imediatamente.
 *   **`./manageradd @usuario`**: Adiciona um usuário à lista de Managers do servidor.
 *   **`./managerremove @usuario`**: Remove um usuário da lista de Managers.
-*   **`./creation-workspace`**: Cria automaticamente uma categoria e canais dedicados para o bot no servidor.
+*   **`./create-workspace`**: Cria automaticamente uma categoria e canais dedicados para o bot no servidor com base no `workspace.json`. O workspace inclui o canal `logs`, usado para registrar comandos executados no servidor.
+*   **`./delete-workspace`**: Remove a categoria e os canais do workspace do bot. Canais adicionais não listados no `workspace.json` são movidos para a categoria `Outros`.
 *   **`./status-type (tipo)`**: Altera o tipo de atividade do bot (jogando, assistindo, ouvindo ou competindo).
 *   **`./status-text (texto)`**: Altera o texto personalizado da atividade do bot.
 

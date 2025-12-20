@@ -1,0 +1,19 @@
+{
+  "category": {
+    "name": "S.P.E.C.T.R.A.A. Workspace"
+  },
+  "channels": [
+    {
+      "name": "logs",
+      "type": "text"
+    },
+    {
+      "name": "debugs",
+      "type": "text"
+    },
+    {
+      "name": "voice-control",
+      "type": "voice"
+    }
+  ]
+}

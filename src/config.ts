@@ -28,12 +28,12 @@ export const Config = {
         warning: 0xFFAA00,    // Laranja
     },
 
-    // Caminhos de Arquivos e Pastas
     paths: {
         data: path.join(process.cwd(), 'data'),
         managers: path.join(process.cwd(), 'data', 'managers.json'),
         emojis: path.join(process.cwd(), 'data', 'emojis.json'),
         status: path.join(process.cwd(), 'data', 'status.json'),
+        workspace: path.join(process.cwd(), 'data', 'workspace.json'),
         commands: path.join(__dirname, 'commands'),
     },
 

@@ -10,6 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 import { Embeds } from '../utils/embeds.js';
+import { findWorkspaceLogsChannel } from '../workspace.js';
 
 /**
  * Gerenciador central de comandos.
@@ -107,7 +108,53 @@ export class CommandHandler {
             await command.execute(message, args);
         } catch (error) {
             console.error(`Erro ao executar comando ${commandName}:`, error);
-            await message.reply(`${Config.emojis.error} Ocorreu um erro ao executar este comando.`);
+            try {
+                // Tenta responder apenas se o canal ainda estiver acessível
+                if (message.channel && message.guild?.channels.cache.has(message.channelId)) {
+                    await message.reply(`${Config.emojis.error} Ocorreu um erro ao executar este comando.`);
+                }
+            } catch (replyError) {
+                // Silenciosamente falha se o canal foi deletado durante a execução
+            }
+            return;
         }
+
+        if (!message.guild) {
+            return;
+        }
+
+        // Verifica se o canal original ainda existe antes de registrar o log
+        // Se o canal foi deletado (como no delete-workspace), pulamos o log ou usamos informações salvas
+        const channelExists = message.guild.channels.cache.has(message.channelId);
+        if (!channelExists && commandName === 'delete-workspace') {
+            // Caso especial para delete-workspace: o canal de logs também pode ter sido deletado
+            // Mas se ele ainda existir, podemos tentar logar que o workspace foi removido
+            const logsChannel = await findWorkspaceLogsChannel(message.guild);
+            if (logsChannel) {
+                const embed = Embeds.log(message.client, 'Workspace Removido', [
+                    { name: 'Comando', value: `\`${Config.bot.prefix}${commandName}\``, inline: true },
+                    { name: 'Executor', value: `<@${message.author.id}>`, inline: true },
+                    { name: 'Status', value: '🗑️ Workspace Removido', inline: true }
+                ]);
+                await logsChannel.send({ embeds: [embed] }).catch(() => {});
+            }
+            return;
+        }
+
+        const logsChannel = await findWorkspaceLogsChannel(message.guild);
+
+        if (!logsChannel) {
+            return;
+        }
+
+        const channelMention = message.channel.type === 0 ? `<#${message.channel.id}>` : `ID: ${message.channel.id}`;
+        
+        const embed = Embeds.log(message.client, 'Execução de Comando', [
+            { name: 'Comando', value: `\`${Config.bot.prefix}${commandName}\``, inline: true },
+            { name: 'Executor', value: `<@${message.author.id}>`, inline: true },
+            { name: 'Canal', value: channelMention, inline: true }
+        ]);
+
+        await logsChannel.send({ embeds: [embed] }).catch(() => {});
     }
 }

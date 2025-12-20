@@ -1,14 +1,15 @@
 import { Message, ChannelType, PermissionFlagsBits } from 'discord.js';
 import type { Command } from '../../types/command.js';
 import { Embeds } from '../../utils/embeds.js';
+import { loadWorkspaceConfig } from '../../workspace.js';
 
 /**
  * Comando para criar uma área de trabalho exclusiva para o bot no servidor.
  * Restrito ao Root Manager.
  */
-export const creationWorkspaceCommand: Command = {
-    name: 'creation-workspace',
-    description: 'Cria uma área de trabalho exclusiva para o bot no servidor.',
+export const createWorkspaceCommand: Command = {
+    name: 'create-workspace',
+    description: 'Cria uma área de trabalho exclusiva para o bot no servidor com base no workspace.json.',
     category: 'admin',
     onlyRoot: true,
     async execute(message: Message) {
@@ -18,8 +19,8 @@ export const creationWorkspaceCommand: Command = {
             return;
         }
 
-        const botName = client.user?.username || 'Bot';
-        const categoryName = `${botName} Area`;
+        const workspaceConfig = await loadWorkspaceConfig();
+        const categoryName = workspaceConfig.categoryName;
 
         // 1. Verificar se a categoria já existe
         const existingCategory = message.guild.channels.cache.find(
@@ -32,7 +33,6 @@ export const creationWorkspaceCommand: Command = {
         }
 
         try {
-            // 2. Criar a categoria privada
             const category = await message.guild.channels.create({
                 name: categoryName,
                 type: ChannelType.GuildCategory,
@@ -52,19 +52,21 @@ export const creationWorkspaceCommand: Command = {
                 ],
             });
 
-            // 3. Criar o canal de texto "debugs"
-            await message.guild.channels.create({
-                name: 'debugs',
-                type: ChannelType.GuildText,
-                parent: category.id,
-            });
-
-            // 4. Criar o canal de voz "voice-control"
-            await message.guild.channels.create({
-                name: 'voice-control',
-                type: ChannelType.GuildVoice,
-                parent: category.id,
-            });
+            for (const channelConfig of workspaceConfig.channels) {
+                if (channelConfig.type === 'text') {
+                    await message.guild.channels.create({
+                        name: channelConfig.name,
+                        type: ChannelType.GuildText,
+                        parent: category.id,
+                    });
+                } else if (channelConfig.type === 'voice') {
+                    await message.guild.channels.create({
+                        name: channelConfig.name,
+                        type: ChannelType.GuildVoice,
+                        parent: category.id,
+                    });
+                }
+            }
 
             await message.reply({ embeds: [Embeds.success(client, `Área de trabalho **${categoryName}** criada com sucesso!`)] });
 

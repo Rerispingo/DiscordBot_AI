@@ -55,4 +55,25 @@ export class Embeds {
     static error(client: Client, description: string) {
         return this.createBase(client, `${Config.emojis.error} Erro`, description, Config.colors.error);
     }
+
+    /**
+     * Embed para logs de comandos.
+     */
+    static log(client: Client, title: string, fields: { name: string, value: string, inline?: boolean }[]) {
+        const embed = new EmbedBuilder()
+            .setTitle(`${Config.emojis.bot} Registro de Comando`)
+            .setColor(Config.colors.primary)
+            .addFields(fields)
+            .setTimestamp();
+
+        const avatarURL = client.user?.displayAvatarURL();
+        if (avatarURL) {
+            embed.setFooter({ 
+                text: `Sistema de Monitoramento - ${client.user?.username}`, 
+                iconURL: avatarURL 
+            });
+        }
+
+        return embed;
+    }
 }
