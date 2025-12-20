@@ -26,7 +26,11 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
     - `8ball.json`: Respostas para o comando de Bola 8.
     - `piadas.json`: Lista de piadas para o comando de piada.
 - `dist/`: Código compilado (JavaScript).
+- `tests/`: Suíte de testes automatizados (Jest).
+    - `managers.test.ts`: Testes para o sistema de managers.
+    - `embeds.test.ts`: Testes para os utilitários de embeds.
 - `structure.md`: Documentação da estrutura lógica.
+- `jest.config.js`: Configuração do framework de testes Jest.
 
 ## Comandos Disponíveis (Prefixo: `./`)
 ### 🏠 Gerais
@@ -69,5 +73,6 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 
 ## Scripts
 - `npm run build`: Compila o projeto para a pasta `dist`.
-- `npm run start`: Inicia o bot a partir do código compilado.
+- `npm run start`: Realiza o build e inicia o bot a partir do código compilado.
 - `npm run dev`: Inicia o bot em modo de desenvolvimento com `nodemon`.
+- `npm run test`: Executa a suíte de testes automatizados com Jest.

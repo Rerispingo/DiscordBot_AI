@@ -17,7 +17,7 @@ export const managersCommand: Command = {
             return;
         }
 
-        const managerIds = ManagerSystem.listManagers(message.guildId);
+        const managerIds = await ManagerSystem.listManagers(message.guildId);
 
         let description = '';
         if (managerIds.length === 0) {

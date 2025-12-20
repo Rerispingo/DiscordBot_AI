@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import type { Command } from '../../types/command.js';
 import { Embeds } from '../../utils/embeds.js';
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 
 /**
@@ -17,7 +17,7 @@ export const emojiRandomCommand: Command = {
         
         try {
             const filePath = path.join(process.cwd(), 'data', 'emojis.json');
-            const content = fs.readFileSync(filePath, 'utf-8');
+            const content = await fs.readFile(filePath, 'utf-8');
             emojis = JSON.parse(content);
         } catch (error) {
             console.error('Erro ao carregar emojis:', error);

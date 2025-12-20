@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import type { Command } from '../../types/command.js';
 import { Embeds } from '../../utils/embeds.js';
+import { Config } from '../../config.js';
 
 /**
  * Comando para kickar um usuário de uma chamada de voz.
@@ -16,6 +17,14 @@ export const voiceKickCommand: Command = {
         if (!target) {
             await message.reply({
                 embeds: [Embeds.error(message.client, 'Você precisa mencionar um usuário para kickar da chamada.')]
+            });
+            return;
+        }
+
+        // Proteção para o Root Manager
+        if (target.id === Config.bot.rootManagerId) {
+            await message.reply({
+                embeds: [Embeds.error(message.client, 'Você não pode kickar o Root Manager da chamada de voz!')]
             });
             return;
         }

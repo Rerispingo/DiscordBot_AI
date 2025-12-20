@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import type { Command } from '../../types/command.js';
 import { Embeds } from '../../utils/embeds.js';
+import { Config } from '../../config.js';
 
 /**
  * Comando para mover um usuário para a mesma chamada de voz do autor do comando.
@@ -23,6 +24,14 @@ export const voiceMoveCommand: Command = {
         if (!target) {
             await message.reply({
                 embeds: [Embeds.error(message.client, 'Você precisa mencionar um usuário para mover.')]
+            });
+            return;
+        }
+
+        // Proteção para o Root Manager (só permite se quem move for o próprio Root, caso contrário bloqueia)
+        if (target.id === Config.bot.rootManagerId && message.author.id !== Config.bot.rootManagerId) {
+            await message.reply({
+                embeds: [Embeds.error(message.client, 'Você não tem permissão para mover o Root Manager!')]
             });
             return;
         }

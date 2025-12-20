@@ -15,7 +15,7 @@ export const ajudaCommand: Command = {
     async execute(message: Message) {
         const client = message.client;
         const isRoot = message.author.id === Config.bot.rootManagerId;
-        const isManager = message.guildId && ManagerSystem.isManager(message.guildId, message.author.id);
+        const isManager = message.guildId && await ManagerSystem.isManager(message.guildId, message.author.id);
         const canSeeManagerCommands = isRoot || isManager;
 
         // Definição das páginas

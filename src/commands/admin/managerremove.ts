@@ -26,7 +26,7 @@ export const managerRemoveCommand: Command = {
             return;
         }
 
-        if (ManagerSystem.removeManager(message.guildId, targetUser.id)) {
+        if (await ManagerSystem.removeManager(message.guildId, targetUser.id)) {
             await message.reply({ embeds: [Embeds.success(client, `O usuário **${targetUser.username}** foi removido da lista de managers deste servidor.`)] });
         } else {
             await message.reply({ embeds: [Embeds.error(client, `O usuário **${targetUser.username}** não consta na lista de managers deste servidor.`)] });

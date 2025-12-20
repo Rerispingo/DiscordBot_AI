@@ -93,7 +93,7 @@ export class CommandHandler {
         // Verificação de permissões Manager
         if (command.onlyManager) {
             const isRoot = message.author.id === Config.bot.rootManagerId;
-            const isManager = message.guildId && ManagerSystem.isManager(message.guildId, message.author.id);
+            const isManager = message.guildId && await ManagerSystem.isManager(message.guildId, message.author.id);
 
             if (!isRoot && !isManager) {
                 await message.reply({

@@ -26,7 +26,7 @@ export const managerAddCommand: Command = {
             return;
         }
 
-        if (ManagerSystem.addManager(message.guildId, targetUser.id)) {
+        if (await ManagerSystem.addManager(message.guildId, targetUser.id)) {
             await message.reply({ embeds: [Embeds.success(client, `O usuário **${targetUser.username}** foi adicionado à lista de managers deste servidor.`)] });
         } else {
             await message.reply({ embeds: [Embeds.info(client, 'Informação', `O usuário **${targetUser.username}** já é um manager neste servidor.`)] });
