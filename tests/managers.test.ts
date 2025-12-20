@@ -38,6 +38,7 @@ describe('ManagerSystem', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        ManagerSystem.clearCache();
     });
 
     describe('isManager', () => {

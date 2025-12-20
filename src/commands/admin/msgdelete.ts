@@ -9,7 +9,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const msgDeleteCommand: Command = {
     name: 'msg-delete',
     description: 'Deleta uma quantidade específica de mensagens do chat.',
-    category: 'admin',
+    category: 'mod-chat',
     onlyManager: true,
     async execute(message: Message, args: string[]) {
         const client = message.client;

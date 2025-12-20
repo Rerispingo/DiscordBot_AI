@@ -10,12 +10,19 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 - `tsconfig.json`: Configurações do TypeScript.
 - `src/`: Código fonte modularizado.
     - `index.ts`: Ponto de entrada (Inicialização do cliente).
-    - `managers.ts`: Lógica de persistência e gerenciamento de permissões.
+    - `managers.ts`: Lógica de persistência e gerenciamento de permissões (com cache em memória).
     - `types/`: Definições de interfaces e tipos.
         - `command.ts`: Interface base para todos os comandos.
     - `handlers/`: Processadores de eventos e lógica central.
-        - `commandHandler.ts`: Gerencia o registro e execução de comandos.
+        - `commandHandler.ts`: Gerencia o registro e execução de comandos, valida restrições de canais de log.
+    - `services/`: Serviços especializados com responsabilidade única.
+        - `permissionService.ts`: Centraliza validações de acesso (Root/Manager).
+        - `loggerService.ts`: Gerencia o registro de comandos no canal de logs.
+    - `utils/`: Utilitários compartilhados.
+        - `pagination.ts`: Sistema de paginação reutilizável via botões.
+        - `embeds.ts`: Fábrica de mensagens em formato Embed.
     - `commands/`: Pasta contendo a implementação de todos os comandos.
+        - `commandStore.ts`: Armazenamento centralizado dos comandos carregados.
         - `general/`: Comandos públicos (ajuda, ping).
         - `admin/`: Comandos restritos (off, manageradd, managerremove).
         - `diversos/`: Comandos de utilidade e diversão (dado, 8ball, moeda, etc).
@@ -63,7 +70,7 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 - `./ajudaroot`: Exibe os comandos exclusivos do Root Manager.
 
 ### 🛡️ Comandos de Moderacao Gerais
-- `./msg-delete (quantidade)`: Deleta mensagens do chat (Managers e Root Manager).
+- `./msg-delete (quantidade)`: Deleta mensagens do chat (Managers e Root Manager). Mapeado internamente como Moderação de Chat.
 
 ### 🔊 Moderação de Voz (Managers)
 - `./voice-lock`: Tranca o canal de voz para apenas 1 pessoa (Managers).

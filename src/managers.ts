@@ -15,33 +15,50 @@ interface ManagersData {
  * Fornece métodos estáticos para adicionar, remover e verificar permissões.
  */
 export class ManagerSystem {
+    private static cache: ManagersData | null = null;
+
     /**
-     * Carrega os dados de managers do arquivo JSON.
+     * Carrega os dados de managers do arquivo JSON com cache em memória.
      * @returns O objeto contendo os managers de todos os servidores.
      */
     private static async load(): Promise<ManagersData> {
+        if (this.cache) {
+            return this.cache;
+        }
+
         try {
             if (!existsSync(Config.paths.managers)) {
-                return {};
+                this.cache = {};
+                return this.cache;
             }
             const content = await fs.readFile(Config.paths.managers, 'utf-8');
-            return JSON.parse(content);
+            this.cache = JSON.parse(content);
+            return this.cache || {};
         } catch (error) {
             console.error('Erro ao carregar managers:', error);
-            return {};
+            this.cache = {};
+            return this.cache;
         }
     }
 
     /**
-     * Salva os dados de managers no arquivo JSON.
+     * Salva os dados de managers no arquivo JSON e atualiza o cache.
      * @param data O objeto de dados a ser persistido.
      */
     private static async save(data: ManagersData): Promise<void> {
         try {
+            this.cache = data;
             await fs.writeFile(Config.paths.managers, JSON.stringify(data, null, 2), 'utf-8');
         } catch (error) {
             console.error('Erro ao salvar managers:', error);
         }
+    }
+
+    /**
+     * Limpa o cache em memória (útil para testes).
+     */
+    static clearCache(): void {
+        this.cache = null;
     }
 
     /**

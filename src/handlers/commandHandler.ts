@@ -11,17 +11,26 @@ const __dirname = path.dirname(__filename);
 
 import { Embeds } from '../utils/embeds.js';
 import { findWorkspaceLogsChannel } from '../workspace.js';
+import { PermissionService } from '../services/permissionService.js';
+import { LoggerService } from '../services/loggerService.js';
+import { commandStore } from '../commands/commandStore.js';
 
 /**
  * Gerenciador central de comandos.
  * Responsável pelo carregamento dinâmico e pela execução com validação de permissões.
  */
 export class CommandHandler {
-    private commands: Collection<string, Command> = new Collection();
     private prefix: string = Config.bot.prefix;
 
     constructor() {
         this.loadCommands();
+    }
+
+    /**
+     * Retorna a lista de comandos carregados.
+     */
+    public getCommands(): Collection<string, Command> {
+        return commandStore;
     }
 
     /**
@@ -52,7 +61,7 @@ export class CommandHandler {
 
                     if (commandKey) {
                         const command: Command = commandModule[commandKey];
-                        this.commands.set(command.name, command);
+                        commandStore.set(command.name, command);
                         console.log(`✅ Comando carregado: ${command.name} (${category})`);
                     }
                 } catch (error) {
@@ -63,6 +72,37 @@ export class CommandHandler {
     }
 
     /**
+     * Verifica se o canal é restrito (canal de logs) e lida com a restrição.
+     * @returns True se o comando deve ser interrompido.
+     */
+    private async handleLogChannelRestriction(message: Message): Promise<boolean> {
+        if (!message.guild) return false;
+
+        const logsChannel = await findWorkspaceLogsChannel(message.guild);
+        if (logsChannel && message.channel.id === logsChannel.id) {
+            // Apaga a mensagem do usuário imediatamente
+            if (message.deletable) {
+                await message.delete().catch(() => {});
+            }
+
+            const warning = await logsChannel.send({
+                content: `⚠️ <@${message.author.id}>, não é permitido o uso de comandos neste canal de logs.`
+            });
+            
+            // Remove o aviso do bot após 2 segundos
+            setTimeout(async () => {
+                try {
+                    await warning.delete();
+                } catch (e) {
+                    // Ignora se a mensagem já tiver sido deletada
+                }
+            }, 2000);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Processa uma mensagem recebida para identificar e executar um comando.
      * @param message A mensagem recebida do Discord.
      */
@@ -70,63 +110,29 @@ export class CommandHandler {
         if (message.author.bot || !message.content.startsWith(this.prefix)) return;
 
         // Restrição para o canal de logs
-        if (message.guild) {
-            const logsChannel = await findWorkspaceLogsChannel(message.guild);
-            if (logsChannel && message.channel.id === logsChannel.id) {
-                // Apaga a mensagem do usuário imediatamente
-                if (message.deletable) {
-                    await message.delete().catch(() => {});
-                }
-
-                const warning = await logsChannel.send({
-                    content: `⚠️ <@${message.author.id}>, não é permitido o uso de comandos neste canal de logs.`
-                });
-                
-                // Remove o aviso do bot após 2 segundos
-                setTimeout(async () => {
-                    try {
-                        await warning.delete();
-                    } catch (e) {
-                        // Ignora se a mensagem já tiver sido deletada
-                    }
-                }, 2000);
-                return;
-            }
-        }
+        if (await this.handleLogChannelRestriction(message)) return;
 
         const args = message.content.slice(this.prefix.length).trim().split(/ +/);
         const commandName = args.shift()?.toLowerCase();
 
         if (!commandName) {
-            const ajudaCmd = this.commands.get('ajuda');
+            const ajudaCmd = commandStore.get('ajuda');
             if (ajudaCmd) {
                 await ajudaCmd.execute(message, []);
             }
             return;
         }
 
-        const command = this.commands.get(commandName);
+        const command = commandStore.get(commandName);
         if (!command) return;
 
-        // Verificação de permissões Root
-        if (command.onlyRoot && message.author.id !== Config.bot.rootManagerId) {
+        // Validação de Permissões via PermissionService
+        const permissionResult = await PermissionService.checkPermissions(message, command);
+        if (!permissionResult.allowed) {
             await message.reply({
-                embeds: [Embeds.error(message.client, 'Este comando é restrito ao Root Manager.')]
+                embeds: [Embeds.error(message.client, permissionResult.error || 'Acesso negado.')]
             });
             return;
-        }
-
-        // Verificação de permissões Manager
-        if (command.onlyManager) {
-            const isRoot = message.author.id === Config.bot.rootManagerId;
-            const isManager = message.guildId && await ManagerSystem.isManager(message.guildId, message.author.id);
-
-            if (!isRoot && !isManager) {
-                await message.reply({
-                    embeds: [Embeds.error(message.client, 'Este comando é restrito aos Managers ou ao Root Manager.')]
-                });
-                return;
-            }
         }
 
         try {
@@ -144,33 +150,7 @@ export class CommandHandler {
             return;
         }
 
-        if (!message.guild) {
-            return;
-        }
-
-        // Filtro de logs: registrar apenas comandos de moderação e ignorar comandos exclusivos de root
-        const moderationCategories = ['mod-chat', 'mod-voz'];
-        const isModeration = moderationCategories.includes(command.category) || command.name === 'msg-delete';
-        const isRootOnly = command.onlyRoot === true;
-
-        if (!isModeration || isRootOnly) {
-            return;
-        }
-
-        const logsChannel = await findWorkspaceLogsChannel(message.guild);
-
-        if (!logsChannel) {
-            return;
-        }
-
-        const channelMention = message.channel.type === 0 ? `<#${message.channel.id}>` : `ID: ${message.channel.id}`;
-        
-        const embed = Embeds.log(message.client, 'Execução de Comando', [
-            { name: 'Comando', value: `\`${Config.bot.prefix}${commandName}\``, inline: true },
-            { name: 'Executor', value: `<@${message.author.id}>`, inline: true },
-            { name: 'Canal', value: channelMention, inline: true }
-        ]);
-
-        await logsChannel.send({ embeds: [embed] }).catch(() => {});
+        // Registro de Log via LoggerService
+        await LoggerService.logCommand(message, command, commandName);
     }
 }
