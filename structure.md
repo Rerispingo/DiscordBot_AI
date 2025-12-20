@@ -20,6 +20,7 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
         - `admin/`: Comandos restritos (off, manageradd, managerremove).
         - `diversos/`: Comandos de utilidade e diversão (dado, 8ball, moeda, etc).
         - `mod-voz/`: Comandos de moderação de canais de voz (voice-lock, voice-kick, etc).
+        - `mod-chat/`: Comandos de moderação de canais de texto (chat-lock, chat-unlock, nuke).
 - `data/`: Armazenamento de dados persistentes.
     - `managers.json`: Lista de managers por servidor.
     - `emojis.json`: Lista de 200 emojis para o comando emojirandom.
@@ -59,11 +60,16 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 ### 🛡️ Comandos de Moderacao Gerais
 - `./msg-delete (quantidade)`: Deleta mensagens do chat (Managers e Root Manager).
 
-### 🔊 Moderação de Voz
+### 🔊 Moderação de Voz (Managers)
 - `./voice-lock`: Tranca o canal de voz para apenas 1 pessoa (Managers).
 - `./voice-unlock`: Libera o canal de voz para entrada ilimitada (Managers).
 - `./voice-kick @user`: Remove um usuário da chamada de voz (Managers).
 - `./voice-move @user`: Move um usuário para sua chamada de voz (Managers).
+
+### 💬 Moderação de Chat (Managers)
+- `./chat-lock`: Bloqueia o canal de texto atual para envio de mensagens (Managers).
+- `./chat-unlock`: Desbloqueia o canal de texto atual para envio de mensagens (Managers).
+- `./nuke`: Recria o canal de texto atual, apagando todo o histórico (Managers).
 
 ## Variáveis de Ambiente
 - `DISCORD_TOKEN`: Token secreto do bot.

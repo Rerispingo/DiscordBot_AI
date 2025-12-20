@@ -57,6 +57,13 @@ export const ajudaCommand: Command = {
                          '**`./voice-kick @user`**\n└ Remove um usuário da chamada.\n\n' +
                          '**`./voice-move @user`**\n└ Move um usuário para sua chamada.'
             });
+            pages.push({
+                title: 'Moderação de Chat',
+                emoji: '💬',
+                content: '**`./chat-lock`**\n└ Bloqueia o envio de mensagens no canal.\n\n' +
+                         '**`./chat-unlock`**\n└ Libera o envio de mensagens no canal.\n\n' +
+                         '**`./nuke`**\n└ Limpa o histórico recriando o canal.'
+            });
         }
 
         let currentPage = 0;

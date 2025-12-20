@@ -52,8 +52,18 @@ Controle os canais de voz com comandos rápidos.
 
 *   **`./voice-lock`**: Restringe o canal de voz em que você está para apenas 1 pessoa.
 *   **`./voice-unlock`**: Remove o limite de pessoas do seu canal de voz atual.
-*   **`./voice-kick @user`**: Desconecta o usuário mencionado de qualquer canal de voz.
-*   **`./voice-move @user`**: Puxa o usuário mencionado para o mesmo canal de voz que você.
+*   **`./voice-kick @user`**: Desconecta o usuário mencionado de qualquer canal de voz. (Proteção: Root Managers não podem ser kickados).
+*   **`./voice-move @user`**: Puxa o usuário mencionado para o mesmo canal de voz que você. (Proteção: Root Managers não podem ser movidos).
+
+---
+
+## 💬 Moderação de Chat (Managers)
+
+Gerencie o fluxo de mensagens e limpe o histórico dos canais.
+
+*   **`./chat-lock`**: Bloqueia o canal de texto atual, impedindo que membros enviem mensagens.
+*   **`./chat-unlock`**: Desbloqueia o canal de texto, permitindo o envio de mensagens novamente.
+*   **`./nuke`**: Recria o canal de texto atual com as mesmas permissões e posição, mas com o histórico totalmente limpo.
 
 ---
 
