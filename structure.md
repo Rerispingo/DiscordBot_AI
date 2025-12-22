@@ -1,52 +1,79 @@
 # Estrutura do Projeto - Discord Bot (TS)
 
-## Descrição
-Um sistema de bot para Discord desenvolvido em TypeScript utilizando a biblioteca `discord.js`. O projeto utiliza ES Modules (ESM) e possui uma arquitetura modular para fácil manutenção.
+## 🚀 Visão Geral do Bot
 
-## Hierarquia de Arquivos
+Este documento detalha a arquitetura e a estrutura do projeto de um bot para Discord, desenvolvido em TypeScript com `discord.js`. O objetivo é criar um bot robusto, escalável e de fácil manutenção, seguindo as melhores práticas de desenvolvimento.
+
+### Filosofia de Design
+
+-   **Modularidade**: O código é organizado em módulos independentes, facilitando o desenvolvimento, teste e manutenção de funcionalidades específicas.
+-   **Escalabilidade**: Projetado para lidar com múltiplos servidores e um número crescente de usuários, com foco em performance e eficiência.
+-   **Segurança**: Implementação de validações rigorosas e controle de permissões para proteger o bot e os usuários.
+-   **Manutenibilidade**: Utilização de TypeScript para tipagem forte, padrões de design e documentação clara para garantir a longevidade do projeto.
+
+### Tecnologias Chave
+
+-   **TypeScript**: Linguagem de programação que adiciona tipagem estática ao JavaScript, melhorando a qualidade e a manutenibilidade do código.
+-   **discord.js**: Biblioteca poderosa e flexível para interagir com a API do Discord.
+-   **ES Modules (ESM)**: Padrão moderno para módulos JavaScript, proporcionando melhor organização e carregamento de código.
+-   **Jest**: Framework de testes para garantir a confiabilidade das funcionalidades.
+
+## 📂 Hierarquia de Arquivos
 - `.env`: Configurações de ambiente (Token, IDs).
 - `.env.example`: Exemplo de configuração.
 - `package.json`: Gerenciamento de dependências e scripts.
 - `tsconfig.json`: Configurações do TypeScript.
 - `src/`: Código fonte modularizado.
-    - `index.ts`: Ponto de entrada (Inicialização do cliente).
-    - `managers.ts`: Lógica de persistência e gerenciamento de permissões (com cache em memória).
-    - `guildConfig.ts`: Gerenciamento de configurações por servidor (boas-vindas, adeus).
-    - `pursuerSystem.ts`: Gerenciamento global de usuários perseguidos (chat-pursuer).
-    - `types/`: Definições de interfaces e tipos.
-        - `command.ts`: Interface base para todos os comandos.
-    - `handlers/`: Processadores de eventos e lógica central.
-        - `commandHandler.ts`: Gerencia o registro e execução de comandos, valida restrições de canais de log.
-    - `services/`: Serviços especializados com responsabilidade única.
-        - `permissionService.ts`: Centraliza validações de acesso (Root/Manager).
-        - `loggerService.ts`: Gerencia o registro de comandos no canal de logs.
-    - `utils/`: Utilitários compartilhados.
-        - `pagination.ts`: Sistema de paginação reutilizável via botões.
-        - `embeds.ts`: Fábrica de mensagens em formato Embed.
-    - `commands/`: Pasta contendo a implementação de todos os comandos.
-        - `commandStore.ts`: Armazenamento centralizado dos comandos carregados.
-        - `general/`: Comandos públicos (ajuda, ping).
-        - `admin/`: Comandos restritos (off, manageradd, managerremove).
-        - `diversos/`: Comandos de utilidade e diversão (dado, 8ball, moeda, etc).
-        - `mod-voz/`: Comandos de moderação de canais de voz (voice-lock, voice-kick, etc).
-        - `mod-chat/`: Comandos de moderação de canais de texto (chat-lock, chat-unlock, nuke).
-        - `configuracao/`: Comandos de configuração de eventos (boas-vindas, adeus).
-        - `perigoso/`: Comandos restritos de perseguição (chat-pursuer).
-- `data/`: Armazenamento de dados persistentes.
-    - `managers.json`: Lista de managers por servidor.
-    - `guild_configs.json`: Configurações de boas-vindas e adeus por servidor.
-    - `pursued_users.json`: Lista global de IDs de usuários sendo perseguidos.
-    - `status.json`: Persistência do status de atividade do bot.
-    - `workspace.json`: Estrutura de categoria e canais do workspace do bot.
-    - `emojis.json`: Lista de 200 emojis para o comando emojirandom.
-    - `8ball.json`: Respostas para o comando de Bola 8.
-    - `piadas.json`: Lista de piadas para o comando de piada.
-- `dist/`: Código compilado (JavaScript).
-- `tests/`: Suíte de testes automatizados (Jest).
-    - `managers.test.ts`: Testes para o sistema de managers.
-    - `embeds.test.ts`: Testes para os utilitários de embeds.
-- `structure.md`: Documentação da estrutura lógica.
-- `jest.config.js`: Configuração do framework de testes Jest.
+    -   `index.ts`: Ponto de entrada principal do bot. Inicializa o cliente Discord, carrega configurações, registra handlers de comandos e eventos, e realiza o login do bot na API do Discord. É o orquestrador central da aplicação.
+    -   `managers.ts`: Gerencia a lógica de persistência e o cache em memória dos managers (usuários com permissões administrativas) por servidor. Inclui funções para adicionar, remover e verificar managers, garantindo que as permissões sejam carregadas e salvas de forma eficiente.
+    -   `guildConfig.ts`: Responsável por gerenciar as configurações específicas de cada servidor (guild), como canais de boas-vindas e mensagens de saída. Ele lida com a persistência dessas configurações em um arquivo JSON e as disponibiliza para o bot.
+    -   `pursuerSystem.ts`: Implementa o sistema de 'perseguição' a usuários, onde o bot reage a mensagens e pode deletá-las. Gerencia a lista de usuários perseguidos globalmente, persistindo os dados em um arquivo JSON.
+    -   `types/`: Contém definições de interfaces e tipos TypeScript que garantem a tipagem forte e a consistência em todo o projeto.
+    -   `command.ts`: Define a interface `Command`, que padroniza a estrutura de todos os comandos do bot, incluindo nome, descrição, categoria, e flags de permissão (ex: `onlyRoot`, `onlyManager`).
+    -   `handlers/`: Contém a lógica central para o processamento de eventos e comandos.
+    -   `commandHandler.ts`: Gerencia o ciclo de vida dos comandos, desde o registro até a execução. Inclui a validação de permissões, tratamento de erros e restrições de canais de log, garantindo que os comandos sejam processados de forma segura e eficiente.
+    -   `services/`: Módulos que encapsulam lógicas de negócio específicas, com responsabilidade única.
+    -   `permissionService.ts`: Centraliza a lógica de validação de acesso e permissões, verificando se um usuário possui as credenciais de Root Manager ou Manager para executar determinadas ações.
+    -   `loggerService.ts`: Responsável por gerenciar o registro de eventos e comandos em canais de log específicos, facilitando o monitoramento e a depuração do bot.
+    -   `utils/`: Contém funções e classes utilitárias que são compartilhadas por diferentes partes do bot, promovendo a reutilização de código.
+    -   `pagination.ts`: Implementa um sistema de paginação interativo para mensagens do Discord, permitindo que o bot exiba listas longas de informações de forma organizada através de botões de navegação.
+    -   `embeds.ts`: Uma fábrica de `Embeds` do Discord, padronizando a criação de mensagens ricas e visualmente atraentes com cores, títulos e campos consistentes.
+    -   `commands/`: Contém a implementação de todos os comandos do bot, organizados por categorias para facilitar a localização e manutenção.
+    -   `commandStore.ts`: Atua como um registro centralizado para todos os comandos carregados, permitindo que o `commandHandler` os acesse e execute dinamicamente.
+        -   `general/`: Comandos de uso geral, acessíveis por qualquer usuário, como `./ajuda` e `./ping`.
+        -   `admin/`: Comandos restritos a usuários com a permissão de Root Manager, como `./off` (desligar o bot) e `./manageradd` (gerenciar managers).
+        -   `diversos/`: Comandos de utilidade e diversão, como `./dado`, `./8ball` e `./moeda`.
+        -   `mod-voz/`: Comandos de moderação específicos para canais de voz, como `./voice-lock` e `./voice-kick`, acessíveis apenas por Managers.
+        -   `mod-chat/`: Comandos de moderação para canais de texto, como `./chat-lock` e `./nuke`, também restritos a Managers.
+        -   `configuracao/`: Comandos para configurar funcionalidades do bot por servidor, como mensagens de boas-vindas e saída, acessíveis por Managers.
+        -   `perigoso/`: Comandos com funcionalidades sensíveis, restritos ao Root Manager, como o sistema de perseguição de usuários (`./chat-pursuer`).
+-   `data/`: Contém arquivos JSON para persistência de dados, garantindo que as configurações e estados do bot sejam mantidos entre as reinicializações.
+    -   `managers.json`: Armazena a lista de IDs de usuários que são managers em cada servidor, permitindo o controle de permissões administrativas.
+    -   `guild_configs.json`: Guarda as configurações personalizadas de cada servidor, como o canal de boas-vindas, a mensagem de boas-vindas, o canal de saída e a mensagem de saída.
+    -   `pursued_users.json`: Mantém um registro global dos IDs de usuários que estão sendo 'perseguidos' pelo bot, utilizado pelo `pursuerSystem`.
+    -   `status.json`: Persiste o status de atividade atual do bot (tipo e texto), permitindo que o bot retome seu status anterior após uma reinicialização.
+    -   `workspace.json`: Define a estrutura padrão de categoria e canais que o bot pode criar em um servidor, facilitando a configuração inicial do ambiente de trabalho do bot.
+    -   `emojis.json`: Contém uma lista de emojis utilizados pelo comando `./emojirandom`.
+    -   `8ball.json`: Armazena as possíveis respostas para o comando `./8ball`.
+    -   `piadas.json`: Contém uma coleção de piadas para o comando `./piada`.
+-   `dist/`: Diretório onde o código TypeScript compilado é armazenado em JavaScript, pronto para execução.
+-   `tests/`: Contém a suíte de testes automatizados do projeto, utilizando o framework Jest para garantir a qualidade e o comportamento esperado das funcionalidades.
+    -   `managers.test.ts`: Testes unitários e de integração para o sistema de gerenciamento de managers.
+    -   `embeds.test.ts`: Testes para os utilitários de criação de embeds, garantindo que as mensagens ricas sejam formatadas corretamente.
+-   `structure.md`: Este documento, que descreve a arquitetura, a hierarquia de arquivos e as diretrizes de desenvolvimento do projeto.
+-   `jest.config.js`: Arquivo de configuração para o Jest, definindo como os testes devem ser executados e quais arquivos devem ser incluídos.
+
+## 🛠️ Diretrizes de Desenvolvimento
+
+Para garantir a qualidade, manutenibilidade e escalabilidade do projeto, as seguintes diretrizes de desenvolvimento devem ser seguidas:
+
+-   **TypeScript e Tipagem Forte**: Utilize TypeScript para todas as novas funcionalidades e refatorações. Garanta que as interfaces e tipos sejam definidos de forma clara e precisa para aproveitar ao máximo os benefícios da tipagem forte.
+-   **Modularidade**: Mantenha os módulos com responsabilidades únicas e bem definidas. Evite acoplamento excessivo entre os componentes.
+-   **Tratamento de Erros**: Implemente um tratamento de erros robusto em todo o código, utilizando `try-catch` e validações adequadas para garantir a resiliência do bot.
+-   **Testes Automatizados**: Escreva testes unitários e de integração para as funcionalidades críticas, utilizando Jest. Isso garante que as alterações não introduzam regressões e que o comportamento do bot seja previsível.
+-   **Documentação Interna (JSDoc)**: Documente todas as funções, classes e exportações públicas utilizando JSDoc. Isso facilita a compreensão do código, a colaboração entre desenvolvedores e a manutenção futura. Para funções e exportações públicas, a documentação deve ser enxuta e rápida, focando no propósito e nos parâmetros.
+-   **Clean Code e SOLID**: Siga os princípios de Clean Code e SOLID para escrever um código legível, flexível e fácil de estender.
+-   **Variáveis de Ambiente**: Utilize variáveis de ambiente para configurações sensíveis (tokens, IDs) e para diferenciar ambientes de desenvolvimento e produção.
 
 ## Comandos Disponíveis (Prefixo: `./`)
 ### 🏠 Gerais

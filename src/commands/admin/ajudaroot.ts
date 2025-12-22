@@ -33,14 +33,6 @@ export const ajudaRootCommand: Command = {
                     '**`./ajudaroot`**\n└ Exibe esta mensagem de ajuda administrativa.'
             },
             {
-                name: `${Config.emojis.tools} **Configurações de Boas-vindas/Saída (Managers)**`,
-                value:
-                    '**`./set-welcome-chat #canal`**\n└ Define o canal para mensagens de boas-vindas.\n\n' +
-                    '**`./set-exit-chat #canal`**\n└ Define o canal para mensagens de adeus.\n\n' +
-                    '**`./set-welcome-msg (msg)`**\n└ Define a mensagem personalizada de boas-vindas.\n\n' +
-                    '**`./set-exit-msg (msg)`**\n└ Define a mensagem personalizada de adeus.'
-            },
-            {
                 name: `☣️ **Comandos Perigosos (Root Only)**`,
                 value:
                     '**`./chat-pursuer @user`**\n└ Ativa a perseguição ao usuário (reações e chance de apagar mensagens).\n\n' +
