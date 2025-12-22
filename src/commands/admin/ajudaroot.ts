@@ -39,6 +39,12 @@ export const ajudaRootCommand: Command = {
                     '**`./set-exit-chat #canal`**\n└ Define o canal para mensagens de adeus.\n\n' +
                     '**`./set-welcome-msg (msg)`**\n└ Define a mensagem personalizada de boas-vindas.\n\n' +
                     '**`./set-exit-msg (msg)`**\n└ Define a mensagem personalizada de adeus.'
+            },
+            {
+                name: `☣️ **Comandos Perigosos (Root Only)**`,
+                value:
+                    '**`./chat-pursuer @user`**\n└ Ativa a perseguição ao usuário (reações e chance de apagar mensagens).\n\n' +
+                    '**`./chat-pursuer-disable @user`**\n└ Desativa a perseguição ao usuário.'
             }
         );
 

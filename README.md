@@ -82,6 +82,8 @@ Estes comandos só podem ser executados pelo proprietário do bot.
 *   **`./delete-workspace`**: Remove a categoria e os canais do workspace do bot. Canais adicionais não listados no `workspace.json` são movidos para a categoria `Outros`.
 *   **`./status-type (tipo)`**: Altera o tipo de atividade do bot (jogando, assistindo, ouvindo ou competindo).
 *   **`./status-text (texto)`**: Altera o texto personalizado da atividade do bot.
+*   **`./chat-pursuer @user`**: Ativa o modo de perseguição para um usuário. O bot reagirá a todas as mensagens dele e terá 20% de chance de deletá-las automaticamente.
+*   **`./chat-pursuer-disable @user`**: Desativa o modo de perseguição para o usuário.
 
 ---
 

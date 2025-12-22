@@ -12,6 +12,7 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
     - `index.ts`: Ponto de entrada (Inicialização do cliente).
     - `managers.ts`: Lógica de persistência e gerenciamento de permissões (com cache em memória).
     - `guildConfig.ts`: Gerenciamento de configurações por servidor (boas-vindas, adeus).
+    - `pursuerSystem.ts`: Gerenciamento global de usuários perseguidos (chat-pursuer).
     - `types/`: Definições de interfaces e tipos.
         - `command.ts`: Interface base para todos os comandos.
     - `handlers/`: Processadores de eventos e lógica central.
@@ -30,9 +31,11 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
         - `mod-voz/`: Comandos de moderação de canais de voz (voice-lock, voice-kick, etc).
         - `mod-chat/`: Comandos de moderação de canais de texto (chat-lock, chat-unlock, nuke).
         - `configuracao/`: Comandos de configuração de eventos (boas-vindas, adeus).
+        - `perigoso/`: Comandos restritos de perseguição (chat-pursuer).
 - `data/`: Armazenamento de dados persistentes.
     - `managers.json`: Lista de managers por servidor.
     - `guild_configs.json`: Configurações de boas-vindas e adeus por servidor.
+    - `pursued_users.json`: Lista global de IDs de usuários sendo perseguidos.
     - `status.json`: Persistência do status de atividade do bot.
     - `workspace.json`: Estrutura de categoria e canais do workspace do bot.
     - `emojis.json`: Lista de 200 emojis para o comando emojirandom.
@@ -62,15 +65,19 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 - `./ascii (texto)`: Converte o texto em uma arte ASCII estilizada.
 - `./piada`: Conta uma piada aleatória sobre o mundo da programação.
 
-### 👑 Administrativos
-- `./off`: Desliga o bot (Apenas Root Manager).
-- `./manageradd @usuario`: Promove um usuário a manager (Apenas Root Manager).
-- `./managerremove @usuario`: Remove um usuário da lista de managers (Apenas Root Manager).
-- `./create-workspace`: Cria uma área de trabalho exclusiva (categoria e canais) para o bot com base no `workspace.json` (Apenas Root Manager).
-- `./delete-workspace`: Remove a área de trabalho do bot movendo canais extras para a categoria `Outros` (Apenas Root Manager).
-- `./status-type (tipo)`: Altera o tipo de atividade do bot (Apenas Root Manager).
-- `./status-text (texto)`: Altera o texto da atividade do bot (Apenas Root Manager).
-- `./ajudaroot`: Exibe os comandos exclusivos do Root Manager.
+### 👑 Administração Root (Root Only)
+*Localizados em `src/commands/admin/` e `src/commands/perigoso/`*
+- `./off`: Desliga o bot.
+- `./manageradd @user`: Adiciona manager ao servidor.
+- `./managerremove @user`: Remove manager do servidor.
+- `./create-workspace`: Configura canais e categoria do bot.
+- `./delete-workspace`: Remove o workspace do bot.
+- `./status-type (tipo)`: Altera tipo de atividade.
+- `./status-text (texto)`: Altera texto da atividade.
+
+#### ☣️ Comandos Perigosos
+- `./chat-pursuer @user`: Ativa perseguição ao usuário (global).
+- `./chat-pursuer-disable @user`: Desativa perseguição ao usuário (global).
 
 ### 🔊 Moderação de Voz (Managers)
 - `./voice-lock`: Tranca o canal de voz para apenas 1 pessoa (Managers).
