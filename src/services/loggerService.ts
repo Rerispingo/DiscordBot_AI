@@ -29,7 +29,7 @@ export class LoggerService {
         const logsChannel = await findWorkspaceLogsChannel(message.guild);
         if (!logsChannel) return;
 
-        const channelMention = message.channel.type === 0 ? `<#${message.channel.id}>` : `ID: ${message.channel.id}`;
+        const channelMention = message.channel?.type === 0 ? `<#${message.channel.id}>` : (message.channel ? `ID: ${message.channel.id}` : 'Canal Deletado/Desconhecido');
         
         const embed = Embeds.log(message.client, 'Execução de Comando', [
             { name: 'Comando', value: `\`${Config.bot.prefix}${commandName}\``, inline: true },

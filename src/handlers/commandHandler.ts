@@ -15,14 +15,38 @@ import { PermissionService } from '../services/permissionService.js';
 import { LoggerService } from '../services/loggerService.js';
 import { commandStore } from '../commands/commandStore.js';
 
+type CheckPermissionsFn = (message: Message, command: Command) => Promise<{ allowed: boolean; error?: string }>;
+type LogCommandFn = (message: Message, command: Command, commandName: string) => Promise<void>;
+type HandleCommandErrorFn = (message: Message, commandName: string, error: unknown) => Promise<void>;
+
+export interface CommandHandlerDependencies {
+    checkPermissions?: CheckPermissionsFn;
+    logCommand?: LogCommandFn;
+    handleCommandError?: HandleCommandErrorFn;
+}
+
 /**
  * Gerenciador central de comandos.
  * Responsável pelo carregamento dinâmico e pela execução com validação de permissões.
  */
 export class CommandHandler {
     private prefix: string = Config.bot.prefix;
+    private checkPermissions: CheckPermissionsFn;
+    private logCommand: LogCommandFn;
+    private handleCommandError: HandleCommandErrorFn;
 
-    constructor() {
+    constructor(deps: CommandHandlerDependencies = {}) {
+        this.checkPermissions = deps.checkPermissions ?? PermissionService.checkPermissions;
+        this.logCommand = deps.logCommand ?? LoggerService.logCommand;
+        this.handleCommandError = deps.handleCommandError ?? (async (message) => {
+            try {
+                if (message.channel && message.guild?.channels.cache.has(message.channelId)) {
+                    await message.reply(`${Config.emojis.error} Ocorreu um erro ao executar este comando.`);
+                }
+            } catch {
+            }
+        });
+
         this.loadCommands();
     }
 
@@ -127,7 +151,7 @@ export class CommandHandler {
         if (!command) return;
 
         // Validação de Permissões via PermissionService
-        const permissionResult = await PermissionService.checkPermissions(message, command);
+        const permissionResult = await this.checkPermissions(message, command);
         if (!permissionResult.allowed) {
             await message.reply({
                 embeds: [Embeds.error(message.client, permissionResult.error || 'Acesso negado.')]
@@ -138,19 +162,11 @@ export class CommandHandler {
         try {
             await command.execute(message, args);
         } catch (error) {
-            console.error(`Erro ao executar comando ${commandName}:`, error);
-            try {
-                // Tenta responder apenas se o canal ainda estiver acessível
-                if (message.channel && message.guild?.channels.cache.has(message.channelId)) {
-                    await message.reply(`${Config.emojis.error} Ocorreu um erro ao executar este comando.`);
-                }
-            } catch (replyError) {
-                // Silenciosamente falha se o canal foi deletado durante a execução
-            }
+            await this.handleCommandError(message, commandName, error);
             return;
         }
 
         // Registro de Log via LoggerService
-        await LoggerService.logCommand(message, command, commandName);
+        await this.logCommand(message, command, commandName).catch(() => {});
     }
 }

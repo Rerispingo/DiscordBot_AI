@@ -34,7 +34,9 @@ export const Config = {
         emojis: path.join(process.cwd(), 'data', 'emojis.json'),
         status: path.join(process.cwd(), 'data', 'status.json'),
         workspace: path.join(process.cwd(), 'data', 'workspace.json'),
+        guildConfigs: path.join(process.cwd(), 'data', 'guild_configs.json'),
         commands: path.join(__dirname, 'commands'),
+        events: path.join(__dirname, 'events'),
     },
 
     // Emojis de Status/UI
@@ -49,3 +51,23 @@ export const Config = {
         voice: '🔊',
     }
 };
+
+export function assertRuntimeConfig(): void {
+    const errors: string[] = [];
+
+    if (!Config.bot.token) {
+        errors.push('DISCORD_TOKEN não encontrado no arquivo .env');
+    }
+
+    if (!Config.bot.prefix) {
+        errors.push('Prefix do bot inválido');
+    }
+
+    if (Config.bot.rootManagerId && !/^\d+$/.test(Config.bot.rootManagerId)) {
+        errors.push('ROOT_MANAGER_ID inválido (use apenas números)');
+    }
+
+    if (errors.length > 0) {
+        throw new Error(errors.join('\n'));
+    }
+}

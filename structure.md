@@ -11,6 +11,7 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 - `src/`: Código fonte modularizado.
     - `index.ts`: Ponto de entrada (Inicialização do cliente).
     - `managers.ts`: Lógica de persistência e gerenciamento de permissões (com cache em memória).
+    - `guildConfig.ts`: Gerenciamento de configurações por servidor (boas-vindas, adeus).
     - `types/`: Definições de interfaces e tipos.
         - `command.ts`: Interface base para todos os comandos.
     - `handlers/`: Processadores de eventos e lógica central.
@@ -30,6 +31,7 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
         - `mod-chat/`: Comandos de moderação de canais de texto (chat-lock, chat-unlock, nuke).
 - `data/`: Armazenamento de dados persistentes.
     - `managers.json`: Lista de managers por servidor.
+    - `guild_configs.json`: Configurações de boas-vindas e adeus por servidor.
     - `status.json`: Persistência do status de atividade do bot.
     - `workspace.json`: Estrutura de categoria e canais do workspace do bot.
     - `emojis.json`: Lista de 200 emojis para o comando emojirandom.
@@ -82,6 +84,12 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 - `./chat-lock`: Bloqueia o canal de texto atual para envio de mensagens (Managers).
 - `./chat-unlock`: Desbloqueia o canal de texto atual para envio de mensagens (Managers).
 - `./nuke`: Recria o canal de texto atual, apagando todo o histórico (Managers).
+
+### ⚙️ Configurações (Managers)
+- `./set-welcome-chat #canal`: Define o canal para mensagens de boas-vindas.
+- `./set-exit-chat #canal`: Define o canal para mensagens de adeus.
+- `./set-welcome-msg (msg)`: Define a mensagem personalizada de boas-vindas.
+- `./set-exit-msg (msg)`: Define a mensagem personalizada de adeus.
 
 ## Variáveis de Ambiente
 - `DISCORD_TOKEN`: Token secreto do bot.

@@ -67,6 +67,17 @@ Gerencie o fluxo de mensagens e limpe o histórico dos canais.
 
 ---
 
+## ⚙️ Configurações (Managers)
+
+Configure as mensagens automáticas do servidor.
+
+*   **`./set-welcome-chat #canal`**: Define em qual canal o bot enviará as mensagens de boas-vindas.
+*   **`./set-exit-chat #canal`**: Define em qual canal o bot enviará as mensagens de adeus.
+*   **`./set-welcome-msg (msg)`**: Define a frase personalizada de boas-vindas.
+*   **`./set-exit-msg (msg)`**: Define a frase personalizada de adeus.
+
+---
+
 ## 👑 Comandos de Root Manager (Exclusivos)
 
 Estes comandos só podem ser executados pelo proprietário do bot.

@@ -1,9 +1,7 @@
-import { Client, GatewayIntentBits, Events } from 'discord.js';
-import * as dotenv from 'dotenv';
-import { CommandHandler } from './handlers/commandHandler.js';
-import { StatusManager } from './statusManager.js';
-
-dotenv.config();
+import { Client, GatewayIntentBits } from 'discord.js';
+import { Config, assertRuntimeConfig } from './config.js';
+import { createContainer } from './container.js';
+import { EventHandler } from './handlers/eventHandler.js';
 
 const client = new Client({
     intents: [
@@ -11,28 +9,26 @@ const client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMembers,
     ],
 });
 
-const commandHandler = new CommandHandler();
+async function main() {
+    const container = createContainer(client);
+    container.errorHandler.registerProcessHandlers();
+    container.errorHandler.registerClientHandlers(client);
 
-client.once(Events.ClientReady, async (readyClient) => {
-    console.log(`🚀 Bot online! Logado como ${readyClient.user.tag}`);
-    
-    // Inicializa o status do bot
-    const status = await StatusManager.load();
-    readyClient.user.setActivity(status.text, { type: status.type });
-});
+    try {
+        assertRuntimeConfig();
+    } catch (error) {
+        container.errorHandler.handleFatalError(error);
+        process.exit(1);
+    }
 
-client.on(Events.MessageCreate, async (message) => {
-    await commandHandler.handle(message);
-});
+    const eventHandler = new EventHandler(client, container);
+    await eventHandler.loadEvents();
 
-const token = process.env.DISCORD_TOKEN;
-
-if (!token) {
-    console.error('ERRO: DISCORD_TOKEN não encontrado no arquivo .env');
-    process.exit(1);
+    await client.login(Config.bot.token);
 }
 
-client.login(token);
+void main();
