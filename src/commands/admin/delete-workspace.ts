@@ -27,19 +27,23 @@ export const deleteWorkspaceCommand: Command = {
             return;
         }
 
-        let otherCategory = message.guild.channels.cache.find(
-            ch => ch.type === ChannelType.GuildCategory && ch.name === 'Outros'
-        );
-
-        if (!otherCategory) {
-            otherCategory = await message.guild.channels.create({
-                name: 'Outros',
-                type: ChannelType.GuildCategory,
-            });
-        }
-
         const workspaceChannelNames = new Set(workspaceConfig.channels.map(ch => ch.name));
         const channelsInCategory = message.guild.channels.cache.filter(ch => ch.parentId === workspaceCategory.id);
+        const channelsToMove = channelsInCategory.filter(ch => !workspaceChannelNames.has(ch.name));
+
+        let otherCategory = null;
+        if (channelsToMove.size > 0) {
+            otherCategory = message.guild.channels.cache.find(
+                ch => ch.type === ChannelType.GuildCategory && ch.name === 'Outros'
+            );
+
+            if (!otherCategory) {
+                otherCategory = await message.guild.channels.create({
+                    name: 'Outros',
+                    type: ChannelType.GuildCategory,
+                });
+            }
+        }
 
         let currentChannelDeleted = false;
 
@@ -50,7 +54,7 @@ export const deleteWorkspaceCommand: Command = {
                     continue; // Deletar por último
                 }
                 await channel.delete();
-            } else if (channel.type === ChannelType.GuildText || channel.type === ChannelType.GuildVoice) {
+            } else if (otherCategory && (channel.type === ChannelType.GuildText || channel.type === ChannelType.GuildVoice)) {
                 await message.guild.channels.edit(channel.id, { parent: otherCategory.id });
             }
         }

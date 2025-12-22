@@ -9,7 +9,7 @@ import { GuildConfigSystem } from '../../guildConfig.js';
 export const setExitMsgCommand: Command = {
     name: 'set-exit-msg',
     description: 'Define a mensagem personalizada de adeus.',
-    category: 'admin',
+    category: 'configuracao',
     onlyManager: true,
     async execute(message: Message, args: string[]) {
         if (!args.length) {

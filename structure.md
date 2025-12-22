@@ -29,6 +29,7 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
         - `diversos/`: Comandos de utilidade e diversão (dado, 8ball, moeda, etc).
         - `mod-voz/`: Comandos de moderação de canais de voz (voice-lock, voice-kick, etc).
         - `mod-chat/`: Comandos de moderação de canais de texto (chat-lock, chat-unlock, nuke).
+        - `configuracao/`: Comandos de configuração de eventos (boas-vindas, adeus).
 - `data/`: Armazenamento de dados persistentes.
     - `managers.json`: Lista de managers por servidor.
     - `guild_configs.json`: Configurações de boas-vindas e adeus por servidor.
@@ -71,9 +72,6 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 - `./status-text (texto)`: Altera o texto da atividade do bot (Apenas Root Manager).
 - `./ajudaroot`: Exibe os comandos exclusivos do Root Manager.
 
-### 🛡️ Comandos de Moderacao Gerais
-- `./msg-delete (quantidade)`: Deleta mensagens do chat (Managers e Root Manager). Mapeado internamente como Moderação de Chat.
-
 ### 🔊 Moderação de Voz (Managers)
 - `./voice-lock`: Tranca o canal de voz para apenas 1 pessoa (Managers).
 - `./voice-unlock`: Libera o canal de voz para entrada ilimitada (Managers).
@@ -83,9 +81,11 @@ Um sistema de bot para Discord desenvolvido em TypeScript utilizando a bibliotec
 ### 💬 Moderação de Chat (Managers)
 - `./chat-lock`: Bloqueia o canal de texto atual para envio de mensagens (Managers).
 - `./chat-unlock`: Desbloqueia o canal de texto atual para envio de mensagens (Managers).
+- `./msg-delete (quantidade)`: Deleta mensagens do chat (Managers e Root Manager). Mapeado internamente como Moderação de Chat.
 - `./nuke`: Recria o canal de texto atual, apagando todo o histórico (Managers).
 
 ### ⚙️ Configurações (Managers)
+*Localizados em `src/commands/configuracao/`*
 - `./set-welcome-chat #canal`: Define o canal para mensagens de boas-vindas.
 - `./set-exit-chat #canal`: Define o canal para mensagens de adeus.
 - `./set-welcome-msg (msg)`: Define a mensagem personalizada de boas-vindas.

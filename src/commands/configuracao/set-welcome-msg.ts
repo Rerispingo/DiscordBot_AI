@@ -9,7 +9,7 @@ import { GuildConfigSystem } from '../../guildConfig.js';
 export const setWelcomeMsgCommand: Command = {
     name: 'set-welcome-msg',
     description: 'Define a mensagem personalizada de boas-vindas.',
-    category: 'admin',
+    category: 'configuracao',
     onlyManager: true,
     async execute(message: Message, args: string[]) {
         if (!args.length) {

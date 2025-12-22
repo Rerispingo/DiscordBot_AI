@@ -26,6 +26,8 @@ export async function loadWorkspaceConfig(): Promise<WorkspaceConfig> {
             channels: [
                 { name: 'logs', type: 'text' },
                 { name: 'debugs', type: 'text' },
+                { name: 'musica', type: 'text' },
+                { name: 'comandos', type: 'text' },
                 { name: 'voice-control', type: 'voice' }
             ]
         };

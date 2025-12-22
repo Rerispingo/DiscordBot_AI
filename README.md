@@ -38,14 +38,6 @@ Informações básicas e comandos utilitários para todos os usuários.
 
 ---
 
-## 🛡️ Comandos de Moderacao Gerais
-
-Comandos para ajudar na manutenção do chat.
-
-*   **`./msg-delete (quantidade)`**: Remove rapidamente uma quantidade específica de mensagens recentes do canal atual.
-
----
-
 ## 🔊 Moderação de Voz (Managers)
 
 Controle os canais de voz com comandos rápidos.
@@ -63,6 +55,7 @@ Gerencie o fluxo de mensagens e limpe o histórico dos canais.
 
 *   **`./chat-lock`**: Bloqueia o canal de texto atual, impedindo que membros enviem mensagens.
 *   **`./chat-unlock`**: Desbloqueia o canal de texto, permitindo o envio de mensagens novamente.
+*   **`./msg-delete (quantidade)`**: Remove rapidamente uma quantidade específica de mensagens recentes do canal atual.
 *   **`./nuke`**: Recria o canal de texto atual com as mesmas permissões e posição, mas com o histórico totalmente limpo.
 
 ---
@@ -89,6 +82,16 @@ Estes comandos só podem ser executados pelo proprietário do bot.
 *   **`./delete-workspace`**: Remove a categoria e os canais do workspace do bot. Canais adicionais não listados no `workspace.json` são movidos para a categoria `Outros`.
 *   **`./status-type (tipo)`**: Altera o tipo de atividade do bot (jogando, assistindo, ouvindo ou competindo).
 *   **`./status-text (texto)`**: Altera o texto personalizado da atividade do bot.
+
+---
+
+## ✨ Automações e Eventos
+
+O bot possui sistemas automáticos que reagem a eventos no servidor:
+
+*   **Boas-vindas Automáticas**: Quando um novo membro entra, o bot envia uma mensagem de boas-vindas em um embed estilizado, mostrando a foto de perfil e o nome do usuário.
+*   **Avisos de Saída**: Quando um membro sai do servidor, o bot envia uma mensagem de despedida para manter o log de membros atualizado.
+*   **Monitoramento de Comandos**: Todos os comandos administrativos executados são registrados no canal de `#logs` do workspace do bot para auditoria.
 
 ---
 

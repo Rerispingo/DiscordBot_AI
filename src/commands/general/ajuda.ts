@@ -39,17 +39,24 @@ export const ajudaCommand: Command = {
         const categoryMeta: Record<string, { title: string; emoji: string }> = {
             'geral': { title: 'Comandos Gerais', emoji: '🏠' },
             'diversos': { title: 'Comandos Diversos', emoji: '🎲' },
-            'admin': { title: 'Administração', emoji: '⚙️' },
-            'mod-chat': { title: 'Moderação de Chat', emoji: '💬' },
-            'mod-voz': { title: 'Moderação de Voz', emoji: '🔊' }
+            'mod-chat': { title: 'Moderação de Chat', emoji: '🛡️' },
+            'mod-voz': { title: 'Moderação de Voz', emoji: '🔊' },
+            'configuracao': { title: 'Configurações', emoji: '⚙️' },
+            'admin': { title: 'Administração', emoji: '👑' }
         };
+
+        // Ordem das categorias para exibição (seguindo o README.md)
+        const categoryOrder = ['geral', 'diversos', 'mod-chat', 'mod-voz', 'configuracao', 'admin'];
 
         // Criar páginas baseadas nas categorias encontradas
         const pages: PaginationPage[] = Array.from(categoriesMap.entries())
             .sort(([catA], [catB]) => {
-                // Ordem personalizada: geral primeiro, depois o resto
-                if (catA === 'geral') return -1;
-                if (catB === 'geral') return 1;
+                const indexA = categoryOrder.indexOf(catA);
+                const indexB = categoryOrder.indexOf(catB);
+                
+                if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                if (indexA !== -1) return -1;
+                if (indexB !== -1) return 1;
                 return catA.localeCompare(catB);
             })
             .map(([category, commands]) => {
