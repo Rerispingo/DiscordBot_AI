@@ -8,7 +8,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const pingCommand: Command = {
     name: 'ping',
     description: 'Verifica a latência do bot.',
-    category: 'geral',
+    category: 'consulta',
     async execute(message: Message) {
         const client = message.client;
         const ping = client.ws.ping;

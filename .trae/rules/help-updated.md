@@ -1,1 +1,0 @@
-Sempre que necessário, atualize o comando "./ajuda" e o comando "./ajudaroot" para refletir as mudanças nos comandos disponíveis.

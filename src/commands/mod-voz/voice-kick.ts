@@ -9,6 +9,7 @@ import { Config } from '../../config.js';
 export const voiceKickCommand: Command = {
     name: 'voice-kick',
     description: 'Remove um usuário mencionado da chamada de voz.',
+    usage: '@user',
     category: 'mod-voz',
     onlyManager: true,
     async execute(message: Message, args: string[]) {

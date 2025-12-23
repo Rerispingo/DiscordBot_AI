@@ -10,6 +10,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const managerRemoveCommand: Command = {
     name: 'managerremove',
     description: 'Remove um manager do servidor.',
+    usage: '@user',
     category: 'admin',
     onlyRoot: true,
     async execute(message: Message, args: string[]) {

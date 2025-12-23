@@ -9,6 +9,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const reverterCommand: Command = {
     name: 'reverter',
     description: 'Inverte o texto fornecido.',
+    usage: '(texto)',
     category: 'diversos',
     async execute(message: Message, args: string[]) {
         if (args.length === 0) {

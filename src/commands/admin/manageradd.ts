@@ -10,6 +10,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const managerAddCommand: Command = {
     name: 'manageradd',
     description: 'Adiciona um manager ao servidor.',
+    usage: '@user',
     category: 'admin',
     onlyRoot: true,
     async execute(message: Message, args: string[]) {

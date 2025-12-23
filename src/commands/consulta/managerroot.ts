@@ -9,7 +9,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const managerRootCommand: Command = {
     name: 'managerroot',
     description: 'Mostra quem é o Root Manager do bot.',
-    category: 'geral',
+    category: 'consulta',
     async execute(message: Message) {
         const client = message.client;
         const rootId = Config.bot.rootManagerId;

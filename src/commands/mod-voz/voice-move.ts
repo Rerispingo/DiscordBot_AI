@@ -9,6 +9,7 @@ import { Config } from '../../config.js';
 export const voiceMoveCommand: Command = {
     name: 'voice-move',
     description: 'Move um usuário mencionado para a sua chamada de voz.',
+    usage: '@user',
     category: 'mod-voz',
     onlyManager: true,
     async execute(message: Message, args: string[]) {

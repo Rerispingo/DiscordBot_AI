@@ -30,11 +30,12 @@ export class Pagination {
         message: Message, 
         pages: PaginationPage[], 
         embedFactory: (page: PaginationPage, idx: number, total: number) => EmbedBuilder,
+        initialPage: number = 0,
         timeout: number = 60000
     ): Promise<void> {
         if (pages.length === 0) return;
 
-        let currentPage = 0;
+        let currentPage = initialPage;
 
         const getRow = (idx: number) => {
             return new ActionRowBuilder<ButtonBuilder>().addComponents(

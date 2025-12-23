@@ -10,6 +10,7 @@ import { PursuerSystem } from '../../pursuerSystem.js';
 export const chatPursuerDisableCommand: Command = {
     name: 'chat-pursuer-disable',
     description: 'Para de perseguir um usuário.',
+    usage: '@user ou (ID)',
     category: 'perigoso',
     onlyRoot: true,
     async execute(message: Message, args: string[]) {

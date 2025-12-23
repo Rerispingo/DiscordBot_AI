@@ -10,7 +10,8 @@ import * as path from 'path';
 export const emojiRandomCommand: Command = {
     name: 'emojirandom',
     description: 'Sorteia uma sequência de emojis aleatórios.',
-    category: 'geral',
+    usage: '(quantidade)',
+    category: 'consulta',
     async execute(message: Message, args: string[]) {
         const client = message.client;
         let emojis: string[] = [];

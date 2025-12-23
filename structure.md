@@ -40,7 +40,7 @@ Este documento detalha a arquitetura e a estrutura do projeto de um bot para Dis
     -   `embeds.ts`: Uma fábrica de `Embeds` do Discord, padronizando a criação de mensagens ricas e visualmente atraentes com cores, títulos e campos consistentes.
     -   `commands/`: Contém a implementação de todos os comandos do bot, organizados por categorias para facilitar a localização e manutenção.
     -   `commandStore.ts`: Atua como um registro centralizado para todos os comandos carregados, permitindo que o `commandHandler` os acesse e execute dinamicamente.
-        -   `general/`: Comandos de uso geral, acessíveis por qualquer usuário, como `./ajuda` e `./ping`.
+        -   `consulta/`: Comandos de consulta e utilitários básicos, acessíveis por qualquer usuário, como `./ajuda` e `./ping`.
         -   `admin/`: Comandos restritos a usuários com a permissão de Root Manager, como `./off` (desligar o bot) e `./manageradd` (gerenciar managers).
         -   `diversos/`: Comandos de utilidade e diversão, como `./dado`, `./8ball` e `./moeda`.
         -   `mod-voz/`: Comandos de moderação específicos para canais de voz, como `./voice-lock` e `./voice-kick`, acessíveis apenas por Managers.
@@ -76,9 +76,10 @@ Para garantir a qualidade, manutenibilidade e escalabilidade do projeto, as segu
 -   **Variáveis de Ambiente**: Utilize variáveis de ambiente para configurações sensíveis (tokens, IDs) e para diferenciar ambientes de desenvolvimento e produção.
 
 ## Comandos Disponíveis (Prefixo: `./`)
-### 🏠 Gerais
+### 🔍 Consultas
 - `./ajuda` ou `./`: Exibe a central de ajuda com comandos categorizados.
 - `./ping`: Testa a conexão com o bot.
+- `./github`: Envia o link do repositório do bot no GitHub.
 - `./managers`: Lista todos os managers cadastrados no servidor atual.
 - `./managerroot`: Mostra quem é o Root Manager do bot.
 - `./emojirandom (quantidade)`: Sorteia uma sequência de emojis aleatórios.
@@ -121,7 +122,9 @@ Para garantir a qualidade, manutenibilidade e escalabilidade do projeto, as segu
 ### ⚙️ Configurações (Managers)
 *Localizados em `src/commands/configuracao/`*
 - `./set-welcome-chat #canal`: Define o canal para mensagens de boas-vindas.
+- `./unset-welcome-chat`: Remove a configuração do canal de boas-vindas.
 - `./set-exit-chat #canal`: Define o canal para mensagens de adeus.
+- `./unset-exit-chat`: Remove a configuração do canal de adeus.
 - `./set-welcome-msg (msg)`: Define a mensagem personalizada de boas-vindas.
 - `./set-exit-msg (msg)`: Define a mensagem personalizada de adeus.
 

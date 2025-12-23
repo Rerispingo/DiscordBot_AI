@@ -9,6 +9,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const escolhaCommand: Command = {
     name: 'escolha',
     description: 'Escolhe aleatoriamente entre as opções fornecidas (separe por vírgula).',
+    usage: '(opção1, opção2, ...)',
     category: 'diversos',
     async execute(message: Message, args: string[]) {
         if (args.length === 0) {

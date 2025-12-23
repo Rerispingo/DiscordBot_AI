@@ -27,11 +27,12 @@ Esta categoria contém comandos para interagir com o bot e passar o tempo.
 
 ---
 
-## 🏠 Comandos Gerais
+## 🔍 Comandos de Consulta
 
 Informações básicas e comandos utilitários para todos os usuários.
 
 *   **`./ping`**: Verifica se o bot está online e qual a latência da conexão.
+*   **`./github`**: Envia o link do repositório do bot no GitHub.
 *   **`./managers`**: Lista todos os usuários que possuem permissão de Manager no servidor atual.
 *   **`./managerroot`**: Identifica quem é o administrador principal do bot.
 *   **`./emojirandom (quantidade)`**: Gera uma sequência aleatória de emojis.
@@ -65,7 +66,9 @@ Gerencie o fluxo de mensagens e limpe o histórico dos canais.
 Configure as mensagens automáticas do servidor.
 
 *   **`./set-welcome-chat #canal`**: Define em qual canal o bot enviará as mensagens de boas-vindas.
+*   **`./unset-welcome-chat`**: Remove a configuração do canal de mensagens de boas-vindas.
 *   **`./set-exit-chat #canal`**: Define em qual canal o bot enviará as mensagens de adeus.
+*   **`./unset-exit-chat`**: Remove a configuração do canal de mensagens de adeus.
 *   **`./set-welcome-msg (msg)`**: Define a frase personalizada de boas-vindas.
 *   **`./set-exit-msg (msg)`**: Define a frase personalizada de adeus.
 

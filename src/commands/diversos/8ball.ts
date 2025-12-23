@@ -15,6 +15,7 @@ const __dirname = path.dirname(__filename);
 export const eightBallCommand: Command = {
     name: '8ball',
     description: 'Faça uma pergunta para a Bola 8 Mágica.',
+    usage: '(pergunta)',
     category: 'diversos',
     async execute(message: Message, args: string[]) {
         if (args.length === 0) {

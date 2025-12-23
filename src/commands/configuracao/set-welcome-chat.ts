@@ -9,6 +9,7 @@ import { GuildConfigSystem } from '../../guildConfig.js';
 export const setWelcomeChatCommand: Command = {
     name: 'set-welcome-chat',
     description: 'Define o canal para mensagens de boas-vindas.',
+    usage: '#canal ou (ID)',
     category: 'configuracao',
     onlyManager: true,
     async execute(message: Message, args: string[]) {

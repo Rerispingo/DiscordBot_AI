@@ -10,6 +10,7 @@ import { StatusManager } from '../../statusManager.js';
 export const statusTypeCommand: Command = {
     name: 'status-type',
     description: 'Altera o tipo de atividade do bot.',
+    usage: '(tipo)',
     category: 'admin',
     onlyRoot: true,
     async execute(message: Message, args: string[]) {

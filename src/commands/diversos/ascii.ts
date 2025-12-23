@@ -9,6 +9,7 @@ import figlet from 'figlet';
 export const asciiCommand: Command = {
     name: 'ascii',
     description: 'Transforma um texto curto em arte ASCII.',
+    usage: '(texto)',
     category: 'diversos',
     async execute(message: Message, args: string[]) {
         if (args.length === 0) {

@@ -10,6 +10,7 @@ import { StatusManager } from '../../statusManager.js';
 export const statusTextCommand: Command = {
     name: 'status-text',
     description: 'Altera o texto da atividade do bot.',
+    usage: '(texto)',
     category: 'admin',
     onlyRoot: true,
     async execute(message: Message, args: string[]) {

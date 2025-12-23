@@ -9,7 +9,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const managersCommand: Command = {
     name: 'managers',
     description: 'Lista todos os managers deste servidor.',
-    category: 'geral',
+    category: 'consulta',
     async execute(message: Message) {
         const client = message.client;
         if (!message.guildId) {

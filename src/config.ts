@@ -17,6 +17,7 @@ export const Config = {
         token: process.env.DISCORD_TOKEN || '',
         prefix: './',
         rootManagerId: process.env.ROOT_MANAGER_ID || '',
+        github: process.env.GITHUB || '',
     },
 
     // Identidade Visual (Cores, Emojis, Estética)

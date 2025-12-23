@@ -13,8 +13,9 @@ import { PermissionService } from '../../services/permissionService.js';
 export const ajudaCommand: Command = {
     name: 'ajuda',
     description: 'Exibe a lista de comandos do bot organizados por categorias.',
-    category: 'geral',
-    async execute(message: Message) {
+    usage: '(page)',
+    category: 'consulta',
+    async execute(message: Message, args: string[]) {
         const client = message.client;
         
         // Agrupar comandos por categoria
@@ -37,7 +38,7 @@ export const ajudaCommand: Command = {
 
         // Mapeamento de nomes amigáveis e emojis para categorias
         const categoryMeta: Record<string, { title: string; emoji: string }> = {
-            'geral': { title: 'Comandos Gerais', emoji: '🏠' },
+            'consulta': { title: 'Consultas', emoji: '🔍' },
             'diversos': { title: 'Comandos Diversos', emoji: '🎲' },
             'mod-chat': { title: 'Moderação de Chat', emoji: '🛡️' },
             'mod-voz': { title: 'Moderação de Voz', emoji: '🔊' },
@@ -46,7 +47,7 @@ export const ajudaCommand: Command = {
         };
 
         // Ordem das categorias para exibição (seguindo o README.md)
-        const categoryOrder = ['geral', 'diversos', 'mod-chat', 'mod-voz', 'configuracao', 'admin'];
+        const categoryOrder = ['diversos', 'consulta', 'mod-chat', 'mod-voz', 'configuracao', 'admin'];
 
         // Criar páginas baseadas nas categorias encontradas
         const pages: PaginationPage[] = Array.from(categoriesMap.entries())
@@ -63,7 +64,10 @@ export const ajudaCommand: Command = {
                 const meta = categoryMeta[category] || { title: `Categoria: ${category}`, emoji: '📂' };
                 const content = commands
                     .sort((a, b) => a.name.localeCompare(b.name))
-                    .map(cmd => `**\`${Config.bot.prefix}${cmd.name}\`**\n└ ${cmd.description}`)
+                    .map(cmd => {
+                        const usage = cmd.usage ? ` ${cmd.usage}` : '';
+                        return `**\`${Config.bot.prefix}${cmd.name}${usage}\`**\n└ ${cmd.description}`;
+                    })
                     .join('\n\n');
 
                 return {
@@ -79,6 +83,8 @@ export const ajudaCommand: Command = {
         }
 
         // Utilizar o utilitário de paginação
+        const pageNumber = args.length > 0 && !isNaN(Number(args[0])) ? Math.max(0, Number(args[0]) - 1) : 0;
+
         await Pagination.create(
             message, 
             pages, 
@@ -86,7 +92,8 @@ export const ajudaCommand: Command = {
                 const embed = Embeds.info(client, page.title, page.content, page.emoji);
                 embed.setFooter({ text: `Página ${idx + 1} de ${total} | Use os botões abaixo para navegar` });
                 return embed;
-            }
+            },
+            pageNumber
         );
     }
 };

@@ -9,6 +9,7 @@ import { Embeds } from '../../utils/embeds.js';
 export const dadoCommand: Command = {
     name: 'dado',
     description: 'Rola um dado de N faces (padrão 6).',
+    usage: '(faces)',
     category: 'diversos',
     async execute(message: Message, args: string[]) {
         const faces = args[0] ? parseInt(args[0]) : 6;

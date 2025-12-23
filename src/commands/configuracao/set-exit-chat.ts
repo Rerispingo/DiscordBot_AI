@@ -9,6 +9,7 @@ import { GuildConfigSystem } from '../../guildConfig.js';
 export const setExitChatCommand: Command = {
     name: 'set-exit-chat',
     description: 'Define o canal para mensagens de adeus.',
+    usage: '#canal ou (ID)',
     category: 'configuracao',
     onlyManager: true,
     async execute(message: Message, args: string[]) {
