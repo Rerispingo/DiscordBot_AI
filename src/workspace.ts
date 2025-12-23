@@ -6,6 +6,10 @@ import { Config } from './config.js';
 export interface WorkspaceChannelConfig {
     name: string;
     type: 'text' | 'voice';
+    /**
+     * Descrição opcional do canal, usada como tópico em canais de texto.
+     */
+    description?: string;
 }
 
 export interface WorkspaceConfig {
@@ -24,8 +28,8 @@ export async function loadWorkspaceConfig(): Promise<WorkspaceConfig> {
         cachedConfig = {
             categoryName: 'Bot Workspace',
             channels: [
-                { name: 'moderation-log', type: 'text' },
-                { name: 'message-log', type: 'text' },
+                { name: 'moderation-log', type: 'text', description: 'Canal de logs de moderação. Apenas o bot pode enviar mensagens aqui.' },
+                { name: 'message-log', type: 'text', description: 'NAO MANDE MENSAGEM AQUI!' },
                 { name: 'debugs', type: 'text' },
                 { name: 'musica', type: 'text' },
                 { name: 'comandos', type: 'text' },

@@ -54,10 +54,27 @@ export const createWorkspaceCommand: Command = {
 
             for (const channelConfig of workspaceConfig.channels) {
                 if (channelConfig.type === 'text') {
+                    const permissionOverwrites = [
+                        {
+                            id: message.guild.id, // @everyone
+                            deny: [PermissionFlagsBits.SendMessages],
+                        },
+                        {
+                            id: message.author.id, // Root Manager
+                            deny: [PermissionFlagsBits.SendMessages],
+                        },
+                        {
+                            id: client.user!.id, // O próprio bot
+                            allow: [PermissionFlagsBits.SendMessages],
+                        }
+                    ];
+
                     await message.guild.channels.create({
                         name: channelConfig.name,
                         type: ChannelType.GuildText,
                         parent: category.id,
+                        topic: channelConfig.description || undefined,
+                        permissionOverwrites: channelConfig.name === 'moderation-log' ? permissionOverwrites : [],
                     });
                 } else if (channelConfig.type === 'voice') {
                     await message.guild.channels.create({
