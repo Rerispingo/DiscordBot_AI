@@ -124,11 +124,4 @@ Basta digitar `./ajuda` em qualquer canal que o bot tenha permissão de leitura 
 
 ---
 
-## 🛠️ Detalhes Técnicos (Para Desenvolvedores/IA)
 
-O bot foi atualizado para uma arquitetura mais robusta e escalável:
-
-*   **Validação Automática de Argumentos**: Comandos agora possuem definições estritas de argumentos (tipo, obrigatoriedade) que são validados automaticamente antes da execução.
-*   **Hierarquia de Erros Customizados**: Sistema centralizado de tratamento de erros usando classes como `ValidationError`, `PermissionError` e `ChannelRestrictionError`.
-*   **Metadados Centralizados**: Todos os comandos possuem metadados detalhados (aliases, exemplos, definições de argumentos) acessíveis via `commandStore`.
-*   **Testes Automatizados**: Suíte de testes Vitest para garantir a integridade do `CommandHandler` e dos serviços de erro.

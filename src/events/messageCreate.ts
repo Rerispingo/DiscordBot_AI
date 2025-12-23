@@ -4,7 +4,7 @@ import type { BotContext } from '../container.js';
 import { PursuerSystem } from '../pursuerSystem.js';
 import * as fs from 'fs';
 import * as path from 'path';
-import { findWorkspaceMessageLogChannel } from '../workspace.js';
+import { findWorkspaceMessageLogChannel, findWorkspaceModerationLogChannel } from '../workspace.js';
 
 // Carrega emojis para reações aleatórias
 const emojisPath = path.join(process.cwd(), 'data', 'emojis.json');
@@ -22,14 +22,19 @@ export const messageCreateEvent: BotEvent<BotContext> = {
         // Ignora mensagens de bots para evitar loops
         if (message.author.bot) return;
 
-        // Lógica para o canal message-log
+        // Bloqueio de mensagens em canais de log do Workspace
         if (message.guild) {
-            const messageLogChannel = await findWorkspaceMessageLogChannel(message.guild);
-            if (messageLogChannel && message.channel.id === messageLogChannel.id) {
+            const messageLog = await findWorkspaceMessageLogChannel(message.guild);
+            const moderationLog = await findWorkspaceModerationLogChannel(message.guild);
+
+            const isLogChannel = (messageLog && message.channel.id === messageLog.id) || 
+                               (moderationLog && message.channel.id === moderationLog.id);
+
+            if (isLogChannel) {
                 await message.delete().catch(() => {});
                 if (message.channel instanceof TextChannel) {
-                    const replyMessage = await message.channel.send(`Olá ${message.author}, por favor, não envie mensagens neste canal!`);
-                    setTimeout(() => replyMessage.delete().catch(() => {}), 2000);
+                    const reply = await message.channel.send(`Olá ${message.author}, por favor, não envie mensagens neste canal!`);
+                    setTimeout(() => reply.delete().catch(() => {}), 2000);
                 }
                 return;
             }

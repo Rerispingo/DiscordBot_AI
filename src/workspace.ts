@@ -3,6 +3,9 @@ import { existsSync } from 'fs';
 import { ChannelType, Guild, TextChannel } from 'discord.js';
 import { Config } from './config.js';
 
+/**
+ * Configuração de um canal individual no workspace.
+ */
 export interface WorkspaceChannelConfig {
     name: string;
     type: 'text' | 'voice';
@@ -12,6 +15,9 @@ export interface WorkspaceChannelConfig {
     description?: string;
 }
 
+/**
+ * Configuração completa do workspace.
+ */
 export interface WorkspaceConfig {
     categoryName: string;
     channels: WorkspaceChannelConfig[];
@@ -19,6 +25,10 @@ export interface WorkspaceConfig {
 
 let cachedConfig: WorkspaceConfig | null = null;
 
+/**
+ * Carrega a configuração do workspace a partir do arquivo JSON ou retorna o padrão.
+ * @returns A configuração do workspace carregada.
+ */
 export async function loadWorkspaceConfig(): Promise<WorkspaceConfig> {
     if (cachedConfig) {
         return cachedConfig;

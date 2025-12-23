@@ -5,11 +5,13 @@
   "channels": [
     {
       "name": "moderation-log",
-      "type": "text"
+      "type": "text",
+      "description": "NAO MANDE MENSAGEM AQUI!"
     },
     {
       "name": "message-log",
-      "type": "text"
+      "type": "text",
+      "description": "NAO MANDE MENSAGEM AQUI!"
     },
     {
       "name": "debugs",
