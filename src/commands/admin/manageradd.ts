@@ -9,16 +9,27 @@ import { Embeds } from '../../utils/embeds.js';
  */
 export const managerAddCommand: Command = {
     name: 'manageradd',
+    aliases: ['addmanager', 'madd'],
     description: 'Adiciona um manager ao servidor.',
-    usage: '@user',
+    usage: '<@user>',
     category: 'admin',
     onlyRoot: true,
-    async execute(message: Message, args: string[]) {
+    args: [
+        {
+            name: 'usuário',
+            description: 'Menção do usuário a ser adicionado como manager',
+            required: true,
+            type: 'user'
+        }
+    ],
+    async execute(message: Message) {
         const client = message.client;
         const targetUser = message.mentions.users.first();
 
         if (!targetUser) {
-            await message.reply({ embeds: [Embeds.error(client, 'Você precisa mencionar um usuário para adicionar como manager. Ex: `./manageradd @usuario`')] });
+            // Este erro agora é tecnicamente tratado pelo CommandHandler se usarmos args corretamente,
+            // mas mantemos uma verificação extra por segurança ou se o ID for passado diretamente.
+            await message.reply({ embeds: [Embeds.error(client, 'Você precisa mencionar um usuário para adicionar como manager.')] });
             return;
         }
 

@@ -14,17 +14,21 @@ const __dirname = path.dirname(__filename);
  */
 export const eightBallCommand: Command = {
     name: '8ball',
-    description: 'Faça uma pergunta para a Bola 8 Mágica.',
-    usage: '(pergunta)',
+    aliases: ['bola8', 'pergunta'],
+    description: 'Faça uma pergunta para a Bola 8 Mágica e receba uma resposta sarcástica.',
+    usage: '<pergunta>',
     category: 'diversos',
-    async execute(message: Message, args: string[]) {
-        if (args.length === 0) {
-            await message.reply({
-                embeds: [Embeds.error(message.client, 'Você precisa fazer uma pergunta!')]
-            });
-            return;
+    minArgs: 1,
+    args: [
+        {
+            name: 'pergunta',
+            description: 'A pergunta que você deseja fazer à Bola 8',
+            required: true,
+            type: 'string'
         }
-
+    ],
+    examples: ['O bot é inteligente?', 'Vou ganhar na loteria?'],
+    async execute(message: Message, args: string[]) {
         const dataPath = path.join(__dirname, '../../../data/8ball.json');
         const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
         const respostas = data.respostas;

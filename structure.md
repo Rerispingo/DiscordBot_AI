@@ -29,12 +29,14 @@ Este documento detalha a arquitetura e a estrutura do projeto de um bot para Dis
     -   `guildConfig.ts`: Responsável por gerenciar as configurações específicas de cada servidor (guild), como canais de boas-vindas e mensagens de saída. Ele lida com a persistência dessas configurações em um arquivo JSON e as disponibiliza para o bot.
     -   `pursuerSystem.ts`: Implementa o sistema de 'perseguição' a usuários, onde o bot reage a mensagens e pode deletá-las. Gerencia a lista de usuários perseguidos globalmente, persistindo os dados em um arquivo JSON.
     -   `types/`: Contém definições de interfaces e tipos TypeScript que garantem a tipagem forte e a consistência em todo o projeto.
-    -   `command.ts`: Define a interface `Command`, que padroniza a estrutura de todos os comandos do bot, incluindo nome, descrição, categoria, e flags de permissão (ex: `onlyRoot`, `onlyManager`).
+    -   `command.ts`: Define a interface `Command` e `CommandArgument`, que padroniza a estrutura de todos os comandos do bot, incluindo nome, aliases, descrição, categoria, argumentos detalhados (com tipos e obrigatoriedade), e flags de permissão (ex: `onlyRoot`, `onlyManager`).
     -   `handlers/`: Contém a lógica central para o processamento de eventos e comandos.
-    -   `commandHandler.ts`: Gerencia o ciclo de vida dos comandos, desde o registro até a execução. Inclui a validação de permissões, tratamento de erros e restrições de canais de log, garantindo que os comandos sejam processados de forma segura e eficiente.
+    -   `commandHandler.ts`: Gerencia o ciclo de vida dos comandos, desde o registro até a execução. Inclui suporte a aliases, validação automática de argumentos, validação de permissões, tratamento de erros centralizado e restrições de canais de log.
     -   `services/`: Módulos que encapsulam lógicas de negócio específicas, com responsabilidade única.
-    -   `permissionService.ts`: Centraliza a lógica de validação de acesso e permissões, verificando se um usuário possui as credenciais de Root Manager ou Manager para executar determinadas ações.
-    -   `loggerService.ts`: Responsável por gerenciar o registro de eventos e comandos em canais de log específicos, facilitando o monitoramento e a depuração do bot.
+    -   `customErrors.ts`: Define classes de erro personalizadas (`BotError`, `ValidationError`, `PermissionError`, etc.) para um tratamento de erros mais granular e informativo.
+    -   `permissionService.ts`: Centraliza a lógica de validação de acesso e permissões.
+    -   `loggerService.ts`: Responsável por gerenciar o registro de eventos e comandos em canais de log.
+    -   `errorHandlerService.ts`: Serviço centralizado para captura, log e resposta de erros, integrando-se com o sistema de erros personalizados.
     -   `utils/`: Contém funções e classes utilitárias que são compartilhadas por diferentes partes do bot, promovendo a reutilização de código.
     -   `pagination.ts`: Implementa um sistema de paginação interativo para mensagens do Discord, permitindo que o bot exiba listas longas de informações de forma organizada através de botões de navegação.
     -   `embeds.ts`: Uma fábrica de `Embeds` do Discord, padronizando a criação de mensagens ricas e visualmente atraentes com cores, títulos e campos consistentes.
@@ -60,6 +62,8 @@ Este documento detalha a arquitetura e a estrutura do projeto de um bot para Dis
 -   `tests/`: Contém a suíte de testes automatizados do projeto, utilizando o framework Jest para garantir a qualidade e o comportamento esperado das funcionalidades.
     -   `managers.test.ts`: Testes unitários e de integração para o sistema de gerenciamento de managers.
     -   `embeds.test.ts`: Testes para os utilitários de criação de embeds, garantindo que as mensagens ricas sejam formatadas corretamente.
+    -   `src/handlers/__tests__/commandHandler.test.ts`: Testes detalhados para o ciclo de vida dos comandos, validações e restrições.
+    -   `src/services/__tests__/customErrors.test.ts`: Testes para a hierarquia de erros personalizados.
 -   `structure.md`: Este documento, que descreve a arquitetura, a hierarquia de arquivos e as diretrizes de desenvolvimento do projeto.
 -   `jest.config.js`: Arquivo de configuração para o Jest, definindo como os testes devem ser executados e quais arquivos devem ser incluídos.
 

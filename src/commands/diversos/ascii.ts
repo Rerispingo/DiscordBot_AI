@@ -9,16 +9,19 @@ import figlet from 'figlet';
 export const asciiCommand: Command = {
     name: 'ascii',
     description: 'Transforma um texto curto em arte ASCII.',
-    usage: '(texto)',
+    usage: '<texto>',
     category: 'diversos',
-    async execute(message: Message, args: string[]) {
-        if (args.length === 0) {
-            await message.reply({
-                embeds: [Embeds.error(message.client, 'Você precisa fornecer um texto!')]
-            });
-            return;
+    minArgs: 1,
+    args: [
+        {
+            name: 'texto',
+            description: 'O texto que você deseja transformar em ASCII (máx 20 caracteres)',
+            required: true,
+            type: 'string'
         }
-
+    ],
+    examples: ['Vibe', 'Hello'],
+    async execute(message: Message, args: string[]) {
         const texto = args.join(' ');
 
         if (texto.length > 20) {

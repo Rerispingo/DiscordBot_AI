@@ -8,7 +8,8 @@ import { Embeds } from '../../utils/embeds.js';
  */
 export const offCommand: Command = {
     name: 'off',
-    description: 'Desliga o bot.',
+    aliases: ['shutdown', 'exit', 'kill'],
+    description: 'Desliga o bot imediatamente.',
     category: 'admin',
     onlyRoot: true,
     async execute(message: Message) {

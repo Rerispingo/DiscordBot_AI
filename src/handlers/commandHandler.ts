@@ -1,6 +1,5 @@
 import { Message, Collection } from 'discord.js';
 import type { Command } from '../types/command.js';
-import { ManagerSystem } from '../managers.js';
 import { Config } from '../config.js';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -14,37 +13,41 @@ import { findWorkspaceLogsChannel } from '../workspace.js';
 import { PermissionService } from '../services/permissionService.js';
 import { LoggerService } from '../services/loggerService.js';
 import { commandStore } from '../commands/commandStore.js';
+import { ValidationError, PermissionError, ChannelRestrictionError } from '../services/customErrors.js';
 
 type CheckPermissionsFn = (message: Message, command: Command) => Promise<{ allowed: boolean; error?: string }>;
 type LogCommandFn = (message: Message, command: Command, commandName: string) => Promise<void>;
 type HandleCommandErrorFn = (message: Message, commandName: string, error: unknown) => Promise<void>;
 
+/**
+ * Dependências injetáveis para o CommandHandler.
+ */
 export interface CommandHandlerDependencies {
     checkPermissions?: CheckPermissionsFn;
     logCommand?: LogCommandFn;
     handleCommandError?: HandleCommandErrorFn;
+    findWorkspaceLogsChannel?: typeof findWorkspaceLogsChannel;
 }
 
 /**
  * Gerenciador central de comandos.
- * Responsável pelo carregamento dinâmico e pela execução com validação de permissões.
+ * Responsável pelo carregamento dinâmico, suporte a aliases, validação de argumentos e execução segura.
  */
 export class CommandHandler {
     private prefix: string = Config.bot.prefix;
     private checkPermissions: CheckPermissionsFn;
     private logCommand: LogCommandFn;
     private handleCommandError: HandleCommandErrorFn;
+    private findWorkspaceLogsChannel: typeof findWorkspaceLogsChannel;
+    private aliases: Collection<string, string> = new Collection();
 
     constructor(deps: CommandHandlerDependencies = {}) {
         this.checkPermissions = deps.checkPermissions ?? PermissionService.checkPermissions;
         this.logCommand = deps.logCommand ?? LoggerService.logCommand;
-        this.handleCommandError = deps.handleCommandError ?? (async (message) => {
-            try {
-                if (message.channel && message.guild?.channels.cache.has(message.channelId)) {
-                    await message.reply(`${Config.emojis.error} Ocorreu um erro ao executar este comando.`);
-                }
-            } catch {
-            }
+        this.findWorkspaceLogsChannel = deps.findWorkspaceLogsChannel ?? findWorkspaceLogsChannel;
+        this.handleCommandError = deps.handleCommandError ?? (async (message, commandName, error) => {
+            // Fallback se não houver um serviço de erro injetado
+            console.error(`[command:${commandName}]`, error);
         });
 
         this.loadCommands();
@@ -58,7 +61,7 @@ export class CommandHandler {
     }
 
     /**
-     * Varre recursivamente o diretório de comandos e os carrega na memória.
+     * Varre recursivamente o diretório de comandos e os carrega na memória, mapeando aliases.
      */
     private async loadCommands() {
         const commandsPath = Config.paths.commands;
@@ -85,7 +88,15 @@ export class CommandHandler {
 
                     if (commandKey) {
                         const command: Command = commandModule[commandKey];
-                        commandStore.set(command.name, command);
+                        commandStore.set(command.name.toLowerCase(), command);
+                        
+                        // Registra aliases
+                        if (command.aliases && Array.isArray(command.aliases)) {
+                            for (const alias of command.aliases) {
+                                this.aliases.set(alias.toLowerCase(), command.name.toLowerCase());
+                            }
+                        }
+
                         console.log(`✅ Comando carregado: ${command.name} (${category})`);
                     }
                 } catch (error) {
@@ -96,15 +107,66 @@ export class CommandHandler {
     }
 
     /**
+     * Valida os argumentos de um comando com base em sua definição.
+     */
+    private validateArguments(command: Command, args: string[]): void {
+        // Validação por contagem simples (min/max)
+        if (command.minArgs !== undefined && args.length < command.minArgs) {
+            throw new ValidationError(`Este comando requer pelo menos ${command.minArgs} argumento(s).`);
+        }
+
+        if (command.maxArgs !== undefined && args.length > command.maxArgs) {
+            throw new ValidationError(`Este comando aceita no máximo ${command.maxArgs} argumento(s).`);
+        }
+
+        // Validação por definição de argumentos (CommandArgument)
+        if (command.args) {
+            for (let i = 0; i < command.args.length; i++) {
+                const argDef = command.args[i];
+                const argVal = args[i];
+
+                if (argDef.required && !argVal) {
+                    throw new ValidationError(`O argumento \`${argDef.name}\` é obrigatório.`);
+                }
+
+                if (argVal) {
+                    this.validateArgumentType(argDef, argVal);
+                }
+            }
+        }
+    }
+
+    /**
+     * Valida o tipo de um argumento específico.
+     */
+    private validateArgumentType(argDef: any, value: string): void {
+        switch (argDef.type) {
+            case 'number':
+                if (isNaN(Number(value))) {
+                    throw new ValidationError(`O argumento \`${argDef.name}\` deve ser um número.`);
+                }
+                break;
+            case 'user':
+                if (!value.match(/^<@!?(\d+)>$/) && !value.match(/^\d+$/)) {
+                    throw new ValidationError(`O argumento \`${argDef.name}\` deve ser uma menção de usuário ou ID.`);
+                }
+                break;
+            case 'channel':
+                if (!value.match(/^<#(\d+)>$/) && !value.match(/^\d+$/)) {
+                    throw new ValidationError(`O argumento \`${argDef.name}\` deve ser uma menção de canal ou ID.`);
+                }
+                break;
+        }
+    }
+
+    /**
      * Verifica se o canal é restrito (canal de logs) e lida com a restrição.
-     * @returns True se o comando deve ser interrompido.
      */
     private async handleLogChannelRestriction(message: Message): Promise<boolean> {
         if (!message.guild) return false;
 
-        const logsChannel = await findWorkspaceLogsChannel(message.guild);
+        const logsChannel = await this.findWorkspaceLogsChannel(message.guild);
         if (logsChannel && message.channel.id === logsChannel.id) {
-            // Apaga a mensagem do usuário imediatamente
             if (message.deletable) {
                 await message.delete().catch(() => {});
             }
@@ -113,13 +175,10 @@ export class CommandHandler {
                 content: `⚠️ <@${message.author.id}>, não é permitido o uso de comandos neste canal de logs.`
             });
             
-            // Remove o aviso do bot após 2 segundos
             setTimeout(async () => {
                 try {
                     await warning.delete();
-                } catch (e) {
-                    // Ignora se a mensagem já tiver sido deletada
-                }
+                } catch (e) {}
             }, 2000);
             return true;
         }
@@ -128,18 +187,19 @@ export class CommandHandler {
 
     /**
      * Processa uma mensagem recebida para identificar e executar um comando.
-     * @param message A mensagem recebida do Discord.
      */
     async handle(message: Message) {
         if (message.author.bot || !message.content.startsWith(this.prefix)) return;
 
-        // Restrição para o canal de logs
-        if (await this.handleLogChannelRestriction(message)) return;
+        if (await this.handleLogChannelRestriction(message)) {
+            // Poderíamos lançar um ChannelRestrictionError aqui, mas o comportamento atual de deletar é mantido
+            return;
+        }
 
         const args = message.content.slice(this.prefix.length).trim().split(/ +/);
-        const commandName = args.shift()?.toLowerCase();
+        const inputName = args.shift()?.toLowerCase();
 
-        if (!commandName) {
+        if (!inputName) {
             const ajudaCmd = commandStore.get('ajuda');
             if (ajudaCmd) {
                 await ajudaCmd.execute(message, []);
@@ -147,26 +207,30 @@ export class CommandHandler {
             return;
         }
 
+        // Busca por nome ou alias
+        const commandName = this.aliases.get(inputName) || inputName;
         const command = commandStore.get(commandName);
+        
         if (!command) return;
 
-        // Validação de Permissões via PermissionService
-        const permissionResult = await this.checkPermissions(message, command);
-        if (!permissionResult.allowed) {
-            await message.reply({
-                embeds: [Embeds.error(message.client, permissionResult.error || 'Acesso negado.')]
-            });
-            return;
-        }
-
         try {
+            // Validação de Permissões
+            const permissionResult = await this.checkPermissions(message, command);
+            if (!permissionResult.allowed) {
+                throw new PermissionError(permissionResult.error || 'Você não tem permissão para usar este comando.');
+            }
+
+            // Validação de Argumentos
+            this.validateArguments(command, args);
+
+            // Execução
             await command.execute(message, args);
+            
+            // Log de sucesso
+            await this.logCommand(message, command, commandName).catch(() => {});
+
         } catch (error) {
             await this.handleCommandError(message, commandName, error);
-            return;
         }
-
-        // Registro de Log via LoggerService
-        await this.logCommand(message, command, commandName).catch(() => {});
     }
 }

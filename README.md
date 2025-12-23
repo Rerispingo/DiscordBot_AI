@@ -9,6 +9,7 @@ O prefixo padrão para todos os comandos é: `./`
 ## 📖 Comandos de Ajuda
 
 *   **`./ajuda`** ou **`./`**: Exibe a lista completa de comandos disponíveis para você, organizados por categorias.
+*   **`./ajuda [comando]`**: Exibe detalhes específicos de um comando, incluindo aliases, argumentos e exemplos.
 *   **`./ajudaroot`**: Exibe comandos exclusivos do administrador principal (Root Manager).
 
 ---
@@ -107,3 +108,14 @@ O bot possui sistemas automáticos que reagem a eventos no servidor:
 ## 🚀 Como começar
 
 Basta digitar `./ajuda` em qualquer canal que o bot tenha permissão de leitura para ver o que ele pode fazer por você!
+
+---
+
+## 🛠️ Detalhes Técnicos (Para Desenvolvedores/IA)
+
+O bot foi atualizado para uma arquitetura mais robusta e escalável:
+
+*   **Validação Automática de Argumentos**: Comandos agora possuem definições estritas de argumentos (tipo, obrigatoriedade) que são validados automaticamente antes da execução.
+*   **Hierarquia de Erros Customizados**: Sistema centralizado de tratamento de erros usando classes como `ValidationError`, `PermissionError` e `ChannelRestrictionError`.
+*   **Metadados Centralizados**: Todos os comandos possuem metadados detalhados (aliases, exemplos, definições de argumentos) acessíveis via `commandStore`.
+*   **Testes Automatizados**: Suíte de testes Jest para garantir a integridade do `CommandHandler` e dos serviços de erro.
