@@ -1,7 +1,7 @@
 import { Message, TextChannel } from 'discord.js';
 import { Config } from '../config.js';
 import { Embeds } from '../utils/embeds.js';
-import { findWorkspaceLogsChannel } from '../workspace.js';
+import { findWorkspaceModerationLogChannel } from '../workspace.js';
 import { Command } from '../types/command.js';
 
 /**
@@ -26,7 +26,7 @@ export class LoggerService {
             return;
         }
 
-        const logsChannel = await findWorkspaceLogsChannel(message.guild);
+        const logsChannel = await findWorkspaceModerationLogChannel(message.guild);
         if (!logsChannel) return;
 
         const channelMention = message.channel?.type === 0 ? `<#${message.channel.id}>` : (message.channel ? `ID: ${message.channel.id}` : 'Canal Deletado/Desconhecido');

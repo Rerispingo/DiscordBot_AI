@@ -5,8 +5,8 @@ import { Embeds } from '../../utils/embeds.js';
 import { commandStore } from '../commandStore.js';
 
 /**
- * Comando para exibir a ajuda exclusiva do Root Manager.
- * Lista todos os comandos administrativos restritos.
+ * Ajuda exclusiva Root.
+ * Lista comandos administrativos restritos.
  */
 export const ajudaRootCommand: Command = {
     name: 'ajudaroot',

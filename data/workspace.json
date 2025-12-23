@@ -4,7 +4,11 @@
   },
   "channels": [
     {
-      "name": "logs",
+      "name": "moderation-log",
+      "type": "text"
+    },
+    {
+      "name": "message-log",
       "type": "text"
     },
     {

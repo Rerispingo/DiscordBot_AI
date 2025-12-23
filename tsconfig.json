@@ -15,8 +15,8 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": false,
     "moduleDetection": "force",
-    "types": ["node", "jest"]
+    "types": ["node"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests/**/*"]
+  "exclude": ["node_modules", "dist", "tests/**/*", "src/**/__tests__"]
 }

@@ -7,8 +7,8 @@ import { Pagination, PaginationPage } from '../../utils/pagination.js';
 import { PermissionService } from '../../services/permissionService.js';
 
 /**
- * Comando de Ajuda com paginação dinâmica.
- * Exibe os comandos do bot organizados por categorias ou detalhes de um comando específico.
+ * Comando de Ajuda.
+ * Exibe a lista de comandos ou detalhes específicos.
  */
 export const ajudaCommand: Command = {
     name: 'ajuda',

@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { Config, assertRuntimeConfig } from './config.js';
 import { createContainer } from './container.js';
 import { EventHandler } from './handlers/eventHandler.js';
@@ -11,6 +11,11 @@ const client = new Client({
         GatewayIntentBits.GuildVoiceStates,
         GatewayIntentBits.GuildMembers,
     ],
+    partials: [
+        Partials.Message,
+        Partials.Channel,
+        Partials.Reaction
+    ]
 });
 
 async function main() {

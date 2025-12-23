@@ -16,7 +16,7 @@ Este documento detalha a arquitetura e a estrutura do projeto de um bot para Dis
 -   **TypeScript**: Linguagem de programação que adiciona tipagem estática ao JavaScript, melhorando a qualidade e a manutenibilidade do código.
 -   **discord.js**: Biblioteca poderosa e flexível para interagir com a API do Discord.
 -   **ES Modules (ESM)**: Padrão moderno para módulos JavaScript, proporcionando melhor organização e carregamento de código.
--   **Jest**: Framework de testes para garantir a confiabilidade das funcionalidades.
+-   **Vitest**: Framework de testes moderno e rápido, compatível com TypeScript, utilizado para garantir a confiabilidade das funcionalidades.
 
 ## 📂 Hierarquia de Arquivos
 - `.env`: Configurações de ambiente (Token, IDs).
@@ -31,8 +31,18 @@ Este documento detalha a arquitetura e a estrutura do projeto de um bot para Dis
     -   `types/`: Contém definições de interfaces e tipos TypeScript que garantem a tipagem forte e a consistência em todo o projeto.
     -   `command.ts`: Define a interface `Command` e `CommandArgument`, que padroniza a estrutura de todos os comandos do bot, incluindo nome, aliases, descrição, categoria, argumentos detalhados (com tipos e obrigatoriedade), e flags de permissão (ex: `onlyRoot`, `onlyManager`).
     -   `handlers/`: Contém a lógica central para o processamento de eventos e comandos.
-    -   `commandHandler.ts`: Gerencia o ciclo de vida dos comandos, desde o registro até a execução. Inclui suporte a aliases, validação automática de argumentos, validação de permissões, tratamento de erros centralizado e restrições de canais de log.
+    -   `commandHandler.ts`: Orquestra o ciclo de vida dos comandos, desde o registro até a execução. Delega responsabilidades de carregamento, validação e restrição para serviços especializados, focando no fluxo principal de processamento de mensagens.
+    -   `events/`: Contém os listeners de eventos do Discord.
+        -   `guildMemberAdd.ts`: Gerencia a entrada de novos membros (boas-vindas).
+        -   `guildMemberRemove.ts`: Gerencia a saída de membros (adeus).
+        -   `messageCreate.ts`: Processa novas mensagens e comandos.
+        -   `messageUpdate.ts`: Monitora e registra edições de mensagens no `message-log`.
+        -   `messageDelete.ts`: Monitora e registra exclusões de mensagens no `message-log`.
+        -   `ready.ts`: Inicialização e log de login do bot.
     -   `services/`: Módulos que encapsulam lógicas de negócio específicas, com responsabilidade única.
+    -   `commandLoaderService.ts`: Lida com o carregamento dinâmico e recursivo de comandos a partir do sistema de arquivos e mapeamento de aliases.
+    -   `argumentValidatorService.ts`: Valida os argumentos passados pelo usuário (quantidade e tipos) com base na definição de cada comando.
+    -   `channelRestrictionService.ts`: Gerencia restrições de uso de comandos em canais protegidos (como canais de logs).
     -   `customErrors.ts`: Define classes de erro personalizadas (`BotError`, `ValidationError`, `PermissionError`, etc.) para um tratamento de erros mais granular e informativo.
     -   `permissionService.ts`: Centraliza a lógica de validação de acesso e permissões.
     -   `loggerService.ts`: Responsável por gerenciar o registro de eventos e comandos em canais de log.
@@ -54,18 +64,17 @@ Este documento detalha a arquitetura e a estrutura do projeto de um bot para Dis
     -   `guild_configs.json`: Guarda as configurações personalizadas de cada servidor, como o canal de boas-vindas, a mensagem de boas-vindas, o canal de saída e a mensagem de saída.
     -   `pursued_users.json`: Mantém um registro global dos IDs de usuários que estão sendo 'perseguidos' pelo bot, utilizado pelo `pursuerSystem`.
     -   `status.json`: Persiste o status de atividade atual do bot (tipo e texto), permitindo que o bot retome seu status anterior após uma reinicialização.
-    -   `workspace.json`: Define a estrutura padrão de categoria e canais que o bot pode criar em um servidor, facilitando a configuração inicial do ambiente de trabalho do bot.
+    -   `workspace.json`: Define a estrutura padrão de categoria e canais (ex: `moderation-log`, `message-log`, `debugs`) que o bot pode criar em um servidor, facilitando a configuração inicial do ambiente de trabalho do bot.
     -   `emojis.json`: Contém uma lista de emojis utilizados pelo comando `./emojirandom`.
     -   `8ball.json`: Armazena as possíveis respostas para o comando `./8ball`.
     -   `piadas.json`: Contém uma coleção de piadas para o comando `./piada`.
 -   `dist/`: Diretório onde o código TypeScript compilado é armazenado em JavaScript, pronto para execução.
--   `tests/`: Contém a suíte de testes automatizados do projeto, utilizando o framework Jest para garantir a qualidade e o comportamento esperado das funcionalidades.
+-   `tests/`: Contém a suíte de testes automatizados do projeto, utilizando o framework Vitest para garantir a qualidade e o comportamento esperado das funcionalidades.
     -   `managers.test.ts`: Testes unitários e de integração para o sistema de gerenciamento de managers.
     -   `embeds.test.ts`: Testes para os utilitários de criação de embeds, garantindo que as mensagens ricas sejam formatadas corretamente.
     -   `src/handlers/__tests__/commandHandler.test.ts`: Testes detalhados para o ciclo de vida dos comandos, validações e restrições.
     -   `src/services/__tests__/customErrors.test.ts`: Testes para a hierarquia de erros personalizados.
 -   `structure.md`: Este documento, que descreve a arquitetura, a hierarquia de arquivos e as diretrizes de desenvolvimento do projeto.
--   `jest.config.js`: Arquivo de configuração para o Jest, definindo como os testes devem ser executados e quais arquivos devem ser incluídos.
 
 ## 🛠️ Diretrizes de Desenvolvimento
 
@@ -74,7 +83,7 @@ Para garantir a qualidade, manutenibilidade e escalabilidade do projeto, as segu
 -   **TypeScript e Tipagem Forte**: Utilize TypeScript para todas as novas funcionalidades e refatorações. Garanta que as interfaces e tipos sejam definidos de forma clara e precisa para aproveitar ao máximo os benefícios da tipagem forte.
 -   **Modularidade**: Mantenha os módulos com responsabilidades únicas e bem definidas. Evite acoplamento excessivo entre os componentes.
 -   **Tratamento de Erros**: Implemente um tratamento de erros robusto em todo o código, utilizando `try-catch` e validações adequadas para garantir a resiliência do bot.
--   **Testes Automatizados**: Escreva testes unitários e de integração para as funcionalidades críticas, utilizando Jest. Isso garante que as alterações não introduzam regressões e que o comportamento do bot seja previsível.
+-   **Testes Automatizados**: Escreva testes unitários e de integração para as funcionalidades críticas, utilizando Vitest. Isso garante que as alterações não introduzam regressões e que o comportamento do bot seja previsível.
 -   **Documentação Interna (JSDoc)**: Documente todas as funções, classes e exportações públicas utilizando JSDoc. Isso facilita a compreensão do código, a colaboração entre desenvolvedores e a manutenção futura. Para funções e exportações públicas, a documentação deve ser enxuta e rápida, focando no propósito e nos parâmetros.
 -   **Clean Code e SOLID**: Siga os princípios de Clean Code e SOLID para escrever um código legível, flexível e fácil de estender.
 -   **Variáveis de Ambiente**: Utilize variáveis de ambiente para configurações sensíveis (tokens, IDs) e para diferenciar ambientes de desenvolvimento e produção.
@@ -142,4 +151,4 @@ Para garantir a qualidade, manutenibilidade e escalabilidade do projeto, as segu
 - `npm run build`: Compila o projeto para a pasta `dist`.
 - `npm run start`: Realiza o build e inicia o bot a partir do código compilado.
 - `npm run dev`: Inicia o bot em modo de desenvolvimento com `nodemon`.
-- `npm run test`: Executa a suíte de testes automatizados com Jest.
+-   `npm run test`: Executa a suíte de testes automatizados com Vitest.

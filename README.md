@@ -82,7 +82,7 @@ Estes comandos só podem ser executados pelo proprietário do bot.
 *   **`./off`**: Desliga o bot imediatamente.
 *   **`./manageradd @usuario`**: Adiciona um usuário à lista de Managers do servidor.
 *   **`./managerremove @usuario`**: Remove um usuário da lista de Managers.
-*   **`./create-workspace`**: Cria automaticamente uma categoria e canais dedicados para o bot no servidor com base no `workspace.json`. O workspace inclui o canal `logs`, usado para registrar comandos executados no servidor.
+*   **`./create-workspace`**: Cria automaticamente uma categoria e canais dedicados para o bot no servidor com base no `workspace.json`. O workspace inclui canais como `moderation-log` (para registros de comandos) e `message-log` (para monitoramento de edições e exclusões de mensagens).
 *   **`./delete-workspace`**: Remove a categoria e os canais do workspace do bot. Canais adicionais não listados no `workspace.json` são movidos para a categoria `Outros`.
 *   **`./status-type (tipo)`**: Altera o tipo de atividade do bot (jogando, assistindo, ouvindo ou competindo).
 *   **`./status-text (texto)`**: Altera o texto personalizado da atividade do bot.
@@ -95,13 +95,26 @@ Estes comandos permitem ações mais sensíveis e devem ser usados com cautela.
 
 ---
 
+## 🛠️ Arquitetura e Desenvolvimento
+
+Este bot foi construído com uma arquitetura modular em TypeScript, visando alta manutenibilidade e escalabilidade:
+
+- **Handlers Modulares**: O processamento de comandos é orquestrado por serviços especializados (`CommandLoaderService`, `ArgumentValidatorService`, `ChannelRestrictionService`).
+- **Tipagem Forte**: Uso extensivo de interfaces e tipos para garantir segurança em tempo de desenvolvimento.
+- **Tratamento de Erros Centralizado**: Sistema de erros personalizados para feedback preciso ao usuário.
+- **Testes Automatizados**: Suíte de testes com Vitest para garantir a estabilidade das funcionalidades principais.
+
+---
+
 ## ✨ Automações e Eventos
 
 O bot possui sistemas automáticos que reagem a eventos no servidor:
 
 *   **Boas-vindas Automáticas**: Quando um novo membro entra, o bot envia uma mensagem de boas-vindas em um embed estilizado, mostrando a foto de perfil e o nome do usuário.
 *   **Avisos de Saída**: Quando um membro sai do servidor, o bot envia uma mensagem de despedida para manter o log de membros atualizado.
-*   **Monitoramento de Comandos**: Todos os comandos administrativos executados são registrados no canal de `#logs` do workspace do bot para auditoria.
+*   **Embeds Padronizados**: Respostas ricas e consistentes.
+*   **Monitoramento em Tempo Real**: Registro de edições e exclusões de mensagens no canal `message-log` do workspace.
+*   **Sistema de Log de Moderação**: Registro de comandos administrativos no canal `moderation-log`.
 
 ---
 
@@ -118,4 +131,4 @@ O bot foi atualizado para uma arquitetura mais robusta e escalável:
 *   **Validação Automática de Argumentos**: Comandos agora possuem definições estritas de argumentos (tipo, obrigatoriedade) que são validados automaticamente antes da execução.
 *   **Hierarquia de Erros Customizados**: Sistema centralizado de tratamento de erros usando classes como `ValidationError`, `PermissionError` e `ChannelRestrictionError`.
 *   **Metadados Centralizados**: Todos os comandos possuem metadados detalhados (aliases, exemplos, definições de argumentos) acessíveis via `commandStore`.
-*   **Testes Automatizados**: Suíte de testes Jest para garantir a integridade do `CommandHandler` e dos serviços de erro.
+*   **Testes Automatizados**: Suíte de testes Vitest para garantir a integridade do `CommandHandler` e dos serviços de erro.

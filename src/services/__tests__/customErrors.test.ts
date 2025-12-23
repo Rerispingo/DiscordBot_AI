@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals';
+import { describe, it, expect, vi } from 'vitest';
 import { BotError, ValidationError, PermissionError, ChannelRestrictionError, InternalError } from '../customErrors.js';
 
 describe('BotError', () => {
@@ -71,7 +71,7 @@ describe('InternalError', () => {
     });
 
     it('should log the original error if provided', () => {
-        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         const originalError = new Error('Original problem');
         new InternalError('Internal server issue', originalError);
         expect(consoleSpy).toHaveBeenCalledWith('[InternalError] Internal server issue', originalError);

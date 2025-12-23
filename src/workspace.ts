@@ -24,7 +24,8 @@ export async function loadWorkspaceConfig(): Promise<WorkspaceConfig> {
         cachedConfig = {
             categoryName: 'Bot Workspace',
             channels: [
-                { name: 'logs', type: 'text' },
+                { name: 'moderation-log', type: 'text' },
+                { name: 'message-log', type: 'text' },
                 { name: 'debugs', type: 'text' },
                 { name: 'musica', type: 'text' },
                 { name: 'comandos', type: 'text' },
@@ -45,11 +46,35 @@ export async function loadWorkspaceConfig(): Promise<WorkspaceConfig> {
     return cachedConfig;
 }
 
-export async function findWorkspaceLogsChannel(guild: Guild): Promise<TextChannel | null> {
-    const config = await loadWorkspaceConfig();
-    const logsConfig = config.channels.find(ch => ch.name === 'logs' && ch.type === 'text');
+/**
+ * Busca o canal de log de moderação no workspace do servidor.
+ * @param guild O servidor onde buscar o canal.
+ * @returns O canal de texto ou null se não for encontrado.
+ */
+export async function findWorkspaceModerationLogChannel(guild: Guild): Promise<TextChannel | null> {
+    return findWorkspaceChannelByName(guild, 'moderation-log');
+}
 
-    if (!logsConfig) {
+/**
+ * Busca o canal de log de mensagens no workspace do servidor.
+ * @param guild O servidor onde buscar o canal.
+ * @returns O canal de texto ou null se não for encontrado.
+ */
+export async function findWorkspaceMessageLogChannel(guild: Guild): Promise<TextChannel | null> {
+    return findWorkspaceChannelByName(guild, 'message-log');
+}
+
+/**
+ * Função genérica para buscar um canal de texto no workspace pelo nome.
+ * @param guild O servidor onde buscar o canal.
+ * @param channelName O nome do canal configurado no workspace.
+ * @returns O canal de texto ou null se não for encontrado.
+ */
+async function findWorkspaceChannelByName(guild: Guild, channelName: string): Promise<TextChannel | null> {
+    const config = await loadWorkspaceConfig();
+    const channelConfig = config.channels.find(ch => ch.name === channelName && ch.type === 'text');
+
+    if (!channelConfig) {
         return null;
     }
 
@@ -61,13 +86,13 @@ export async function findWorkspaceLogsChannel(guild: Guild): Promise<TextChanne
         return null;
     }
 
-    const logsChannel = guild.channels.cache.find(
+    const channel = guild.channels.cache.find(
         ch =>
             ch.type === ChannelType.GuildText &&
-            ch.name === logsConfig.name &&
+            ch.name === channelConfig.name &&
             ch.parentId === category.id
     ) as TextChannel | undefined;
 
-    return logsChannel ?? null;
+    return channel ?? null;
 }
 
